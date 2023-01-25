@@ -7,9 +7,10 @@ import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import { green } from "@mui/material/colors";
 import { createTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BillInfo from "../BillInfo";
 import { BillContext } from "../context/BillContext";
+import PageSwitcher from "./PageSwitcher"
 
 function Home() {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ function Home() {
   const [participants, setParticipants] = useState([]);
   const [name, setName] = useState("");
   const [billName, setBillName] = useState("");
+  const [items, setItems] = useState([["", 0]]);
+
+  useEffect(() => {
+    console.log(items);
+  }, [items])
 
   const theme = createTheme({
     palette: {
@@ -42,8 +48,8 @@ function Home() {
           <ReceiptLongRoundedIcon sx={{ mr: 1 }} />
           New Bill
         </Fab>
-        <BillContext.Provider value={{participants, setParticipants, name, setName, billName, setBillName}}>
-          <BillInfo />
+        <BillContext.Provider value={{step, setStep, participants, setParticipants, name, setName, billName, setBillName, items, setItems}}>
+          <PageSwitcher />
         </BillContext.Provider>
       </ThemeProvider>
     </div>

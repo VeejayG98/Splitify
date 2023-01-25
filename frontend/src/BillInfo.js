@@ -13,9 +13,12 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useContext, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
+import "./test.css"
 
 function BillInfo() {
   const {
+    step,
+    setStep,
     participants,
     setParticipants,
     name,
@@ -114,7 +117,7 @@ function BillInfo() {
           </Grid>
         </CardContent>
         <Box margin={1} display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="primary" sx={{ height: 40 }}>
+          <Button variant="contained" color="primary" sx={{ height: 40 }} onClick={() => setStep(step + 1)}>
             Next
           </Button>
         </Box>
