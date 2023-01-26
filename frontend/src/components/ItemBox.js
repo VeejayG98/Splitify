@@ -20,8 +20,6 @@ function ItemBox({ id }) {
 
   const handleCheckBox = (event) => {
     if (event.target.checked) {
-      // setSelectedCheckBoxes({...selectedCheckBoxes, [event.target.id]: items[id][1]/(Object.keys(selectedCheckBoxes).length + 1)});
-
       setSelectedCheckBoxes((selectedCheckBoxes) => {
         let newCost =
           items[id][1] / (Object.keys(selectedCheckBoxes).length + 1);
@@ -48,19 +46,21 @@ function ItemBox({ id }) {
   };
 
   const handleItemNameChange = (event) => {
-    let tempItems = items;
     let index = event.currentTarget.id;
-
-    tempItems[index][0] = event.currentTarget.value;
-    setItems(tempItems);
+    setItems((items) => {
+      const tempItems = [...items];
+      tempItems[index][0] = event.currentTarget.value;
+      return tempItems;
+    });
   };
 
   const handleItemBillChange = (event) => {
-    let tempItems = items;
     let index = event.currentTarget.id;
-
-    tempItems[index][1] = Number(event.currentTarget.value);
-    setItems(tempItems);
+    setItems((items) => {
+      const tempItems = [...items];
+      tempItems[index][1] = Number(event.currentTarget.value);
+      return tempItems;
+    });
   };
 
   return (
