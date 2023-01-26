@@ -2,16 +2,12 @@ import {
   Button,
   Card,
   CardContent,
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Paper,
-  TextField,
   Typography,
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import ItemBox from "./components/ItemBox";
 import { BillContext } from "./context/BillContext";
 
@@ -89,6 +85,35 @@ function ItemsPage() {
             </Button>
           </Box>
         </CardContent>
+
+        {/* Code for Next and Previous Button -- IN PROGRESS */}
+
+        <Grid container direction="row">
+          <Grid item>
+            <Box margin={1} display="flex" justifyContent="flex-start">
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ height: 40 }}
+                onClick={() => setStep(step + 1)}
+              >
+                Previous
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item>
+            <Box margin={1} display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ height: 40 }}
+                onClick={() => setStep(step + 1)}
+              >
+                Next
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Card>
     </Grid>
   );
