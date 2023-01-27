@@ -81,32 +81,24 @@ function ItemsPage() {
 
         {/* Code for Next and Previous Button -- IN PROGRESS */}
 
-        <Grid container direction="row">
-          <Grid item>
-            <Box margin={1} display="flex" justifyContent="flex-start">
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ height: 40 }}
-                onClick={() => setStep(step + 1)}
-              >
-                Previous
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item>
-            <Box margin={1} display="flex" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ height: 40 }}
-                onClick={() => setStep(step + 1)}
-              >
-                Next
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+        <Box display="flex" justifyContent="space-between">
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ height: 40, margin: 2 }}
+            onClick={() => setStep(step - 1)}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ height: 40, margin: 2 }}
+            onClick={() => setStep(step + 1)}
+          >
+            Next
+          </Button>
+        </Box>
       </Card>
     </Grid>
   );
