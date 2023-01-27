@@ -4,16 +4,17 @@ import {
   CardActions,
   CardContent,
   Grid,
+  InputAdornment,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import { green } from "@mui/material/colors";
-import PersonIcon from "@mui/icons-material/Person";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { useContext, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
-import "./test.css"
+import "./test.css";
 
 function BillInfo() {
   const {
@@ -48,13 +49,14 @@ function BillInfo() {
                 Create a bill
               </Typography>
             </Grid>
-            <Grid item>
+            <Grid item marginTop={2}>
               <TextField
                 label="Bill Name"
-                variant="standard"
+                variant="filled"
                 required
                 color="success"
                 onChange={(e) => setBillName(e.target.value)}
+                defaultValue={billName}
               />
             </Grid>
           </Grid>
@@ -65,7 +67,7 @@ function BillInfo() {
             alignContent="center"
             justifyContent="center"
             padding={2}
-            marginTop={5}
+            marginTop={2}
           >
             <Grid item>
               <Typography
@@ -78,10 +80,17 @@ function BillInfo() {
             <Grid item>
               <TextField
                 label="Participant Name"
-                variant="standard"
+                variant="filled"
                 required
                 color="success"
                 onChange={(e) => setName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircleRoundedIcon />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </Grid>
             <Grid item marginTop={2}>
@@ -106,7 +115,7 @@ function BillInfo() {
                   key={id}
                 >
                   <Grid item>
-                    <PersonIcon />
+                    <AccountCircleRoundedIcon />
                   </Grid>
                   <Grid item>
                     <Typography variant="h7">{participant}</Typography>
@@ -117,7 +126,12 @@ function BillInfo() {
           </Grid>
         </CardContent>
         <Box margin={1} display="flex" justifyContent="flex-end">
-          <Button variant="contained" color="primary" sx={{ height: 40 }} onClick={() => setStep(step + 1)}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ height: 40 }}
+            onClick={() => setStep(step + 1)}
+          >
             Next
           </Button>
         </Box>
