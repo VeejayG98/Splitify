@@ -14,9 +14,10 @@ function ItemsPage() {
     participants,
     items,
     setItems,
+    numItems,
+    setNumItems
   } = useContext(BillContext);
 
-  const [numItems, setNumItems] = useState(1);
 
   const addNewItem = () => {
     setNumItems(numItems + 1);

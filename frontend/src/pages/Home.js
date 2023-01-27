@@ -17,6 +17,7 @@ function Home() {
   const [name, setName] = useState("");
   const [billName, setBillName] = useState("");
   const [items, setItems] = useState([["", 0, {}]]);
+  const [numItems, setNumItems] = useState(1);
 
   const theme = createTheme({
     palette: {
@@ -52,6 +53,8 @@ function Home() {
             setBillName,
             items,
             setItems,
+            numItems,
+            setNumItems
           }}
         >
           <PageSwitcher />
