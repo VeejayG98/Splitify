@@ -12,35 +12,35 @@ import { BillContext } from "../context/BillContext";
 
 function ItemBox({ id }) {
   const { participants, items, setItems } = useContext(BillContext);
-  const [selectedCheckBoxes, setSelectedCheckBoxes] = useState({});
-
-  useEffect(() => {
-    console.log(selectedCheckBoxes);
-  }, [selectedCheckBoxes]);
 
   const handleCheckBox = (event) => {
+    console.log(items);
     if (event.target.checked) {
-      setSelectedCheckBoxes((selectedCheckBoxes) => {
-        let newCost =
-          items[id][1] / (Object.keys(selectedCheckBoxes).length + 1);
-        const res = {
+      setItems((items) => {
+        let currentSplit = items[id][2];
+        let newCost = items[id][1] / (Object.keys(currentSplit).length + 1);
+        const newSplit = {
           ...Object.fromEntries(
-            Object.keys(selectedCheckBoxes).map((key) => [key, newCost])
+            Object.keys(currentSplit).map((key) => [key, newCost])
           ),
           [event.target.id]: newCost,
         };
+        const res = [...items];
+        res[id][2] = newSplit;
         return res;
         // })
       });
     } else {
-      setSelectedCheckBoxes((selectedCheckBoxes) => {
-        let newCost =
-          items[id][1] / (Object.keys(selectedCheckBoxes).length - 1);
-        const { [event.target.id]: removedProperty, ...rest } =
-          selectedCheckBoxes;
-        return Object.fromEntries(
+      setItems((items) => {
+        let currentSplit = items[id][2];
+        let newCost = items[id][1] / (Object.keys(currentSplit).length - 1);
+        const { [event.target.id]: removedProperty, ...rest } = currentSplit;
+        const newSplit = Object.fromEntries(
           Object.keys(rest).map((key) => [key, newCost])
         );
+        const res = [...items];
+        res[id][2] = newSplit;
+        return res;
       });
     }
   };
@@ -118,10 +118,10 @@ function ItemBox({ id }) {
           </Grid>
         </Grid>
       </Grid>
-      {Object.keys(selectedCheckBoxes).map((key) => {
+      {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
-            {key}
+            {key}: {items[id][2][key]}
           </Typography>
         );
       })}

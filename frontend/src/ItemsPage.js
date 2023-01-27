@@ -1,10 +1,4 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
@@ -23,6 +17,11 @@ function ItemsPage() {
   } = useContext(BillContext);
 
   const [numItems, setNumItems] = useState(1);
+
+  const addNewItem = () => {
+    setNumItems(numItems + 1);
+    setItems([...items, ["", 0, {}]]);
+  };
 
   return (
     <Grid
@@ -74,13 +73,7 @@ function ItemsPage() {
           </Grid>
 
           <Box display="flex" justifyContent="flex-end" marginTop={3}>
-            <Button
-              variant="contained"
-              onClick={() => {
-                setNumItems(numItems + 1);
-                setItems([...items, ["", 0]]);
-              }}
-            >
+            <Button variant="contained" onClick={addNewItem}>
               Add Item
             </Button>
           </Box>

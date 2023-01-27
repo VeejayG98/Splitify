@@ -1,7 +1,4 @@
-import {
-  Fab,
-  ThemeProvider,
-} from "@mui/material";
+import { Fab, ThemeProvider } from "@mui/material";
 import NavBar from "../components/Navbar";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import { green } from "@mui/material/colors";
@@ -10,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import BillInfo from "../BillInfo";
 import { BillContext } from "../context/BillContext";
-import PageSwitcher from "./PageSwitcher"
+import PageSwitcher from "./PageSwitcher";
 
 function Home() {
   const navigate = useNavigate();
@@ -19,11 +16,7 @@ function Home() {
   const [participants, setParticipants] = useState([]);
   const [name, setName] = useState("");
   const [billName, setBillName] = useState("");
-  const [items, setItems] = useState([["", 0]]);
-
-  useEffect(() => {
-    console.log(items);
-  }, [items])
+  const [items, setItems] = useState([["", 0, {}]]);
 
   const theme = createTheme({
     palette: {
@@ -42,13 +35,25 @@ function Home() {
           aria-label="add bill"
           color="primary"
           sx={{ position: "fixed", bottom: "20px", right: "20px" }}
-          onClick={() => {
-          }}
+          onClick={() => {}}
         >
           <ReceiptLongRoundedIcon sx={{ mr: 1 }} />
           New Bill
         </Fab>
-        <BillContext.Provider value={{step, setStep, participants, setParticipants, name, setName, billName, setBillName, items, setItems}}>
+        <BillContext.Provider
+          value={{
+            step,
+            setStep,
+            participants,
+            setParticipants,
+            name,
+            setName,
+            billName,
+            setBillName,
+            items,
+            setItems,
+          }}
+        >
           <PageSwitcher />
         </BillContext.Provider>
       </ThemeProvider>
