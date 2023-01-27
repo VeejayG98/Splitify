@@ -28,6 +28,11 @@ function BillInfo() {
     setBillName,
   } = useContext(BillContext);
 
+  const addItems = () => {
+    if (name.length !== 0)
+      setParticipants([...participants, name]);
+  }
+
   return (
     <Grid
       container
@@ -91,16 +96,21 @@ function BillInfo() {
                     </InputAdornment>
                   ),
                 }}
+                onKeyDown = {(e) => {
+                  if(e.key == 'Enter'){
+                    addItems();
+                    setName("");
+                  }
+                    
+                }}
+                value={name}
               />
             </Grid>
             <Grid item marginTop={2}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={(e) => {
-                  if (name.length !== 0)
-                    setParticipants([...participants, name]);
-                }}
+                onClick={addItems}
               >
                 Add
               </Button>
