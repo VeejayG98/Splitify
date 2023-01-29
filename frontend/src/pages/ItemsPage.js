@@ -2,8 +2,8 @@ import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
-import ItemBox from "./components/ItemBox";
-import { BillContext } from "./context/BillContext";
+import ItemBox from "../components/ItemBox";
+import { BillContext } from "../context/BillContext";
 
 function ItemsPage() {
   const {
@@ -97,7 +97,7 @@ function ItemsPage() {
             sx={{ height: 40, margin: 2 }}
             onClick={() => setStep(step + 1)}
           >
-            Next
+            Generate Bill
           </Button>
         </Box>
       </Card>

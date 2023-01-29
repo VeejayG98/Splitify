@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import BillInfo from "../BillInfo";
 import { BillContext } from "../context/BillContext";
-import ItemsPage from "../ItemsPage";
+import GenerateBillPage from "./GenerateBillPage";
+import ItemsPage from "./ItemsPage";
 
 function PageSwitcher() {
   const { step } = useContext(BillContext);
@@ -9,12 +10,15 @@ function PageSwitcher() {
   switch (step) {
     case 1:
       return <BillInfo />;
-    
+
     case 2:
-      return <ItemsPage />
+      return <ItemsPage />;
+
+    case 3:
+      return <GenerateBillPage />;
 
     default:
-      return <></>
+      return <></>;
   }
 }
 export default PageSwitcher;

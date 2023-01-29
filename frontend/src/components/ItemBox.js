@@ -10,11 +10,10 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { BillContext } from "../context/BillContext";
 
-function ItemBox({ id }) {
+const ItemBox = ({ id }) => {
   const { participants, items, setItems } = useContext(BillContext);
 
   const handleCheckBox = (event) => {
-    console.log(items);
     if (event.target.checked) {
       setItems((items) => {
         let currentSplit = items[id][2];
@@ -86,6 +85,7 @@ function ItemBox({ id }) {
             color="primary"
             onChange={handleItemNameChange}
             id={`${id}`}
+            defaultValue={items[id][0]}
           />
         </Grid>
         <Grid item alignContent="center" justifyContent="center" marginTop={2}>
@@ -101,6 +101,7 @@ function ItemBox({ id }) {
             }}
             onChange={handleItemBillChange}
             id={`${id}`}
+            defaultValue={items[id][1]}
           />
         </Grid>
         <Grid item>
