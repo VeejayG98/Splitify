@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { BillContext } from "../context/BillContext";
 
 const SplitupTable = () => {
-  const { participants, items } = useContext(BillContext);
+  const { participants, items, totals } = useContext(BillContext);
 
   return (
     // <TableContainer component={Paper}>
@@ -38,6 +38,7 @@ const SplitupTable = () => {
         <TableHead>
           <TableRow>
             <TableCell>Item Name</TableCell>
+            <TableCell>Item Price</TableCell>
             {participants.map((participant, id) => (
               <TableCell key={id}>{participant}</TableCell>
             ))}
@@ -52,6 +53,9 @@ const SplitupTable = () => {
               <TableCell component="th" scope="row">
                 {item[0]}
               </TableCell>
+              <TableCell>
+                {item[1]}
+              </TableCell>
               {participants.map((participant, pid) =>
                 item[2].hasOwnProperty(participant) ? (
                   <TableCell key={pid}>{item[2][participant]}</TableCell>
@@ -61,6 +65,20 @@ const SplitupTable = () => {
               )}
             </TableRow>
           ))}
+          <TableRow
+              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                Total
+              </TableCell>
+              <TableCell>
+                {totals['totalPrice']}
+              </TableCell>
+              {participants.map((participant, id) => (
+                <TableCell key={id}>{totals[participant]}</TableCell>
+              )
+              )}
+            </TableRow>
         </TableBody>
       </Table>
     </TableContainer>

@@ -1,11 +1,11 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext } from "react";
 import SplitupTable from "../components/SplitupTable";
 import { BillContext } from "../context/BillContext";
 
 function GenerateBillPage() {
-  const { billName } = useContext(BillContext);
+  const { billName, step, setStep } = useContext(BillContext);
 
   return (
     <Grid container alignContent="center" justifyContent="center" padding={2}>
@@ -20,6 +20,11 @@ function GenerateBillPage() {
             <SplitupTable />
           </Box>
         </CardContent>
+        <Box display="flex" justifyContent="flex-start">
+          <Button variant="contained" color="primary" sx={{margin: 2}} onClick={() => setStep(step - 1)}>
+            Modify Bill
+          </Button>
+        </Box>
       </Card>
     </Grid>
   );

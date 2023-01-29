@@ -77,7 +77,7 @@ const ItemBox = ({ id }) => {
         justifyContent="center"
         marginTop={2}
       >
-        <Grid item alignContent="center" justifyContent="center" marginTop={2}>
+        <Grid item display="flex" alignContent="center" justifyContent="center" marginTop={2}>
           <TextField
             label="Item name"
             variant="filled"
@@ -88,7 +88,7 @@ const ItemBox = ({ id }) => {
             defaultValue={items[id][0]}
           />
         </Grid>
-        <Grid item alignContent="center" justifyContent="center" marginTop={2}>
+        <Grid item display="flex" alignContent="center" justifyContent="center" marginTop={2}>
           <TextField
             label="Item price"
             variant="filled"
@@ -106,11 +106,11 @@ const ItemBox = ({ id }) => {
         </Grid>
         <Grid item>
           <Grid container direction="row" margin={3}>
-            {participants.map((participant, id) => (
-              <Grid item key={id} marginRight={2}>
+            {participants.map((participant, pid) => (
+              <Grid item key={pid} marginRight={2}>
                 <FormControlLabel
                   control={
-                    <Checkbox id={participant} onChange={handleCheckBox} />
+                    <Checkbox id={participant} onChange={handleCheckBox} checked={items[id][2].hasOwnProperty(participant)}/>
                   }
                   label={participant}
                 />
@@ -119,13 +119,13 @@ const ItemBox = ({ id }) => {
           </Grid>
         </Grid>
       </Grid>
-      {Object.keys(items[id][2]).map((key) => {
+      {/* {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
             {key}: {items[id][2][key]}
           </Typography>
         );
-      })}
+      })} */}
     </Paper>
   );
 }

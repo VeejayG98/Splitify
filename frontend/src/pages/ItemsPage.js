@@ -15,7 +15,9 @@ function ItemsPage() {
     items,
     setItems,
     numItems,
-    setNumItems
+    setNumItems,
+    totals,
+    setTotals
   } = useContext(BillContext);
 
 
@@ -23,6 +25,24 @@ function ItemsPage() {
     setNumItems(numItems + 1);
     setItems([...items, ["", 0, {}]]);
   };
+
+  const generateBill = () => {
+    calculateTotals();
+    setStep(step + 1);
+  }
+
+  const calculateTotals = () => {
+    let tempTotals = Object.fromEntries(participants.map((participant) => [participant, 0]));
+    console.log(items);
+    for (let x in items){
+      for (let y in participants){
+        if (items[x][2].hasOwnProperty(participants[y]))
+          tempTotals[participants[y]] += items[x][2][participants[y]];
+      }
+    }
+    const totals = Object.values(tempTotals).reduce((totalPrice, price) => totalPrice + price, 0);
+    setTotals({...tempTotals, totalPrice: totals});
+  }
 
   return (
     <Grid
@@ -95,7 +115,7 @@ function ItemsPage() {
             variant="contained"
             color="primary"
             sx={{ height: 40, margin: 2 }}
-            onClick={() => setStep(step + 1)}
+            onClick={generateBill}
           >
             Generate Bill
           </Button>
