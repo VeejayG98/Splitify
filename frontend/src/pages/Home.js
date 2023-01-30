@@ -13,7 +13,7 @@ function Home() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  const [participants, setParticipants] = useState([]);
+  const [participants, setParticipants] = useState(new Set());
   const [name, setName] = useState("");
   const [billName, setBillName] = useState("");
   const [items, setItems] = useState([["", 0, {}]]);

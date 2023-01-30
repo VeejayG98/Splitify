@@ -39,7 +39,7 @@ const SplitupTable = () => {
           <TableRow>
             <TableCell>Item Name</TableCell>
             <TableCell>Item Price</TableCell>
-            {participants.map((participant, id) => (
+            {[...participants].map((participant, id) => (
               <TableCell key={id}>{participant}</TableCell>
             ))}
           </TableRow>
@@ -56,7 +56,7 @@ const SplitupTable = () => {
               <TableCell>
                 {item[1]}
               </TableCell>
-              {participants.map((participant, pid) =>
+              {[...participants].map((participant, pid) =>
                 item[2].hasOwnProperty(participant) ? (
                   <TableCell key={pid}>{item[2][participant]}</TableCell>
                 ) : (
@@ -74,7 +74,7 @@ const SplitupTable = () => {
               <TableCell>
                 {totals['totalPrice']}
               </TableCell>
-              {participants.map((participant, id) => (
+              {[...participants].map((participant, id) => (
                 <TableCell key={id}>{totals[participant]}</TableCell>
               )
               )}

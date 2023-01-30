@@ -121,7 +121,7 @@ const ItemBox = ({ id }) => {
         </Grid>
         <Grid item>
           <Grid container direction="row" margin={3}>
-            {participants.map((participant, pid) => (
+            {[...participants].map((participant, pid) => (
               <Grid item key={pid} marginRight={2}>
                 <FormControlLabel
                   control={
@@ -134,13 +134,13 @@ const ItemBox = ({ id }) => {
           </Grid>
         </Grid>
       </Grid>
-      {/* {Object.keys(items[id][2]).map((key) => {
+      {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
             {key}: {items[id][2][key]}
           </Typography>
         );
-      })} */}
+      })}
     </Paper>
   );
 }

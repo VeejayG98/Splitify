@@ -29,7 +29,10 @@ function BillInfo() {
 
   const addItems = () => {
     if (name.length !== 0) {
-      setParticipants([...participants, name])
+      setParticipants((oldParticipants) => {
+        oldParticipants.add(name);
+        return oldParticipants;
+      })
       setName("");
     }
   };
@@ -112,7 +115,7 @@ function BillInfo() {
               </Button>
             </Grid>
             <Grid item>
-              {participants.map((participant, id) => (
+              {[...participants].map((participant, id) => (
                 <Grid
                   container
                   marginTop={1}
