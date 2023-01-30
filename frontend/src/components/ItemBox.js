@@ -13,6 +13,18 @@ import { BillContext } from "../context/BillContext";
 const ItemBox = ({ id }) => {
   const { participants, items, setItems } = useContext(BillContext);
 
+  const updateSplit = () => {
+    if (Object.keys(items[id][2]).length !== 0){
+      let newCost = items[id][1] / Object.keys(items[id][2]).length;
+      let newSplit = Object.fromEntries(Object.keys(items[id][2]).map((key) => [key, newCost]));
+      console.log(newSplit);
+      const res = [...items];
+      res[id][2] = newSplit;
+      console.log(res);
+      setItems(res);
+    }
+  }
+
   const handleCheckBox = (event) => {
     if (event.target.checked) {
       setItems((items) => {
@@ -99,7 +111,10 @@ const ItemBox = ({ id }) => {
                 <InputAdornment position="start">$</InputAdornment>
               ),
             }}
-            onChange={handleItemBillChange}
+            onChange={(event) => {
+              handleItemBillChange(event);
+              updateSplit();
+            }}
             id={`${id}`}
             defaultValue={items[id][1]}
           />
