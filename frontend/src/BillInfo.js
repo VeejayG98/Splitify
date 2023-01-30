@@ -14,7 +14,6 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import { useContext, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
-import "./test.css";
 
 function BillInfo() {
   const {
