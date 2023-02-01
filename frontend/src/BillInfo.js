@@ -4,6 +4,7 @@ import {
   CardActions,
   CardContent,
   Grid,
+  IconButton,
   InputAdornment,
   Paper,
   TextField,
@@ -11,6 +12,7 @@ import {
 } from "@mui/material";
 import { green } from "@mui/material/colors";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import { useContext, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
@@ -27,14 +29,22 @@ function BillInfo() {
     setBillName,
   } = useContext(BillContext);
 
-  const addItems = () => {
+  const addParticipant = () => {
     if (name.length !== 0) {
       setParticipants((oldParticipants) => {
         oldParticipants.add(name);
         return oldParticipants;
-      })
+      });
       setName("");
     }
+  };
+
+  const deleteParticipant = (event) => {
+    setParticipants((oldParticipants) => {
+      oldParticipants = new Set([...oldParticipants]);
+      oldParticipants.delete(event.currentTarget.id);
+      return oldParticipants;
+    });
   };
 
   return (
@@ -102,7 +112,7 @@ function BillInfo() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key == "Enter") {
-                    addItems();
+                    addParticipant();
                     setName("");
                   }
                 }}
@@ -110,27 +120,36 @@ function BillInfo() {
               />
             </Grid>
             <Grid item marginTop={2}>
-              <Button variant="contained" color="primary" onClick={addItems}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={addParticipant}
+              >
                 Add
               </Button>
             </Grid>
             <Grid item>
-              {[...participants].map((participant, id) => (
-                <Grid
-                  container
-                  marginTop={1}
-                  alignContent="center"
-                  justifyContent="left"
-                  key={id}
-                >
-                  <Grid item>
+              <Grid
+                container
+                marginTop={1}
+                display="flex"
+                alignContent="left"
+                justifyContent="left"
+                direction="column"
+              >
+                {[...participants].map((participant, pid) => (
+                  <Grid item key={pid}>
                     <AccountCircleRoundedIcon />
-                  </Grid>
-                  <Grid item>
                     <Typography variant="h7">{participant}</Typography>
+                    <IconButton onClick={deleteParticipant} id={participant}>
+                      <CancelRoundedIcon
+                        fontSize="small"
+                        // sx={{ marginBottom: 5 }}
+                      />
+                    </IconButton>
                   </Grid>
-                </Grid>
-              ))}
+                ))}
+              </Grid>
             </Grid>
           </Grid>
         </CardContent>

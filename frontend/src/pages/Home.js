@@ -4,8 +4,7 @@ import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import { green } from "@mui/material/colors";
 import { createTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import BillInfo from "../BillInfo";
+import { useState } from "react";
 import { BillContext } from "../context/BillContext";
 import PageSwitcher from "./PageSwitcher";
 
