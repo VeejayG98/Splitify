@@ -14,16 +14,18 @@ const ItemBox = ({ id }) => {
   const { participants, items, setItems } = useContext(BillContext);
 
   const updateSplit = () => {
-    if (Object.keys(items[id][2]).length !== 0){
+    if (Object.keys(items[id][2]).length !== 0) {
       let newCost = items[id][1] / Object.keys(items[id][2]).length;
-      let newSplit = Object.fromEntries(Object.keys(items[id][2]).map((key) => [key, newCost]));
+      let newSplit = Object.fromEntries(
+        Object.keys(items[id][2]).map((key) => [key, newCost])
+      );
       console.log(newSplit);
       const res = [...items];
       res[id][2] = newSplit;
       console.log(res);
       setItems(res);
     }
-  }
+  };
 
   const handleCheckBox = (event) => {
     if (event.target.checked) {
@@ -58,18 +60,20 @@ const ItemBox = ({ id }) => {
 
   const handleItemNameChange = (event) => {
     let index = event.currentTarget.id;
+    let itemName = event.currentTarget.value;
     setItems((items) => {
       const tempItems = [...items];
-      tempItems[index][0] = event.currentTarget.value;
+      tempItems[index][0] = itemName;
       return tempItems;
     });
   };
 
   const handleItemBillChange = (event) => {
     let index = event.currentTarget.id;
+    let itemCost = Number(event.currentTarget.value);
     setItems((items) => {
       const tempItems = [...items];
-      tempItems[index][1] = Number(event.currentTarget.value);
+      tempItems[index][1] = itemCost;
       return tempItems;
     });
   };
@@ -89,7 +93,13 @@ const ItemBox = ({ id }) => {
         justifyContent="center"
         marginTop={2}
       >
-        <Grid item display="flex" alignContent="center" justifyContent="center" marginTop={2}>
+        <Grid
+          item
+          display="flex"
+          alignContent="center"
+          justifyContent="center"
+          marginTop={2}
+        >
           <TextField
             label="Item name"
             variant="filled"
@@ -100,7 +110,13 @@ const ItemBox = ({ id }) => {
             defaultValue={items[id][0]}
           />
         </Grid>
-        <Grid item display="flex" alignContent="center" justifyContent="center" marginTop={2}>
+        <Grid
+          item
+          display="flex"
+          alignContent="center"
+          justifyContent="center"
+          marginTop={2}
+        >
           <TextField
             label="Item price"
             variant="filled"
@@ -125,7 +141,11 @@ const ItemBox = ({ id }) => {
               <Grid item key={pid} marginRight={2}>
                 <FormControlLabel
                   control={
-                    <Checkbox id={participant} onChange={handleCheckBox} checked={items[id][2].hasOwnProperty(participant)}/>
+                    <Checkbox
+                      id={participant}
+                      onChange={handleCheckBox}
+                      checked={items[id][2].hasOwnProperty(participant)}
+                    />
                   }
                   label={participant}
                 />
@@ -143,5 +163,5 @@ const ItemBox = ({ id }) => {
       })}
     </Paper>
   );
-}
+};
 export default ItemBox;
