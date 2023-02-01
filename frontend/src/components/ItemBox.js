@@ -120,6 +120,7 @@ const ItemBox = ({ id }) => {
           <TextField
             label="Item price"
             variant="filled"
+            type="number"
             required
             color="primary"
             InputProps={{
