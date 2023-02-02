@@ -14,33 +14,14 @@ const SplitupTable = () => {
   const { participants, items, totals } = useContext(BillContext);
 
   return (
-    // <TableContainer component={Paper}>
-    //   <Table sx={{ minWidth: 650 }} aria-label="a dense table">
-    //     <TableHead>
-    //       <TableRow>
-    //         <TableCell align="center">Loan ID</TableCell>
-    //         <TableCell align="center">Fine Amount</TableCell>
-    //         <TableCell align="center">Status</TableCell>
-    //       </TableRow>
-    //     </TableHead>
-    //     <TableBody>
-    //       <TableRow sx={{ "&:last-child td, &:last-chlild th": { border: 0 } }}>
-    //         <TableCell component="th" scope="row" align="center">
-    //           Hello
-    //         </TableCell>
-    //       </TableRow>
-    //     </TableBody>
-    //   </Table>
-    // </TableContainer>
-
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 400 }}>
+    <TableContainer component={Paper} sx={{maxHeight: 440}}>
+      <Table sx={{ minWidth: 400 }} stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell>Item Name</TableCell>
-            <TableCell>Item Price</TableCell>
+            <TableCell sx={{fontWeight: "bold"}}>Item Name</TableCell>
+            <TableCell sx={{fontWeight: "bold"}}>Item Price</TableCell>
             {[...participants].map((participant, id) => (
-              <TableCell key={id}>{participant}</TableCell>
+              <TableCell key={id} sx={{fontWeight: "bold"}}>{participant}</TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -53,9 +34,7 @@ const SplitupTable = () => {
               <TableCell component="th" scope="row">
                 {item[0]}
               </TableCell>
-              <TableCell>
-                {item[1]}
-              </TableCell>
+              <TableCell>{item[1]}</TableCell>
               {[...participants].map((participant, pid) =>
                 item[2].hasOwnProperty(participant) ? (
                   <TableCell key={pid}>{item[2][participant]}</TableCell>
@@ -65,20 +44,15 @@ const SplitupTable = () => {
               )}
             </TableRow>
           ))}
-          <TableRow
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                Total
-              </TableCell>
-              <TableCell>
-                {totals['totalPrice']}
-              </TableCell>
-              {[...participants].map((participant, id) => (
-                <TableCell key={id}>{totals[participant]}</TableCell>
-              )
-              )}
-            </TableRow>
+          <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+            <TableCell component="th" scope="row">
+              Total
+            </TableCell>
+            <TableCell>{totals["totalPrice"]}</TableCell>
+            {[...participants].map((participant, id) => (
+              <TableCell key={id}>{totals[participant]}</TableCell>
+            ))}
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
