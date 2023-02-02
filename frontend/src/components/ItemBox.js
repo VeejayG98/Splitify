@@ -5,8 +5,9 @@ import {
   Paper,
   TextField,
   InputAdornment,
-  Typography,
+  Button,
 } from "@mui/material";
+import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { BillContext } from "../context/BillContext";
 
@@ -25,6 +26,23 @@ const ItemBox = ({ id }) => {
       console.log(res);
       setItems(res);
     }
+  };
+
+  const selectAll = () => {
+    let newCost = items[id][1] / participants.size;
+    let newSplit = Object.fromEntries(
+      [...participants].map((key) => [key, newCost])
+    );
+    const res = [...items];
+    res[id][2] = newSplit;
+    setItems(res);
+  };
+
+  const unselectAll = () => {
+    let newSplit = {};
+    const res = [...items];
+    res[id][2] = newSplit;
+    setItems(res);
   };
 
   const handleCheckBox = (event) => {
@@ -59,21 +77,19 @@ const ItemBox = ({ id }) => {
   };
 
   const handleItemNameChange = (event) => {
-    let index = event.currentTarget.id;
     let itemName = event.currentTarget.value;
     setItems((items) => {
       const tempItems = [...items];
-      tempItems[index][0] = itemName;
+      tempItems[id][0] = itemName;
       return tempItems;
     });
   };
 
   const handleItemBillChange = (event) => {
-    let index = event.currentTarget.id;
     let itemCost = Number(event.currentTarget.value);
     setItems((items) => {
       const tempItems = [...items];
-      tempItems[index][1] = itemCost;
+      tempItems[id][1] = itemCost;
       return tempItems;
     });
   };
@@ -155,6 +171,28 @@ const ItemBox = ({ id }) => {
           </Grid>
         </Grid>
       </Grid>
+      <Box display="flex" justifyContent="flex-start">
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{ margin: 2 }}
+          onClick={selectAll}
+        >
+          Select all
+        </Button>
+      </Box>
+
+      <Box display="flex" justifyContent="flex-start">
+        <Button
+          variant="outlined"
+          color="primary"
+          sx={{ marginLeft: 2, marginBottom: 2 }}
+          onClick={unselectAll}
+        >
+          Unselect all
+        </Button>
+      </Box>
+
       {/* {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
