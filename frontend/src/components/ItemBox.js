@@ -8,7 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { BillContext } from "../context/BillContext";
 
 const ItemBox = ({ id }) => {
