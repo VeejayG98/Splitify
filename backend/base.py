@@ -40,6 +40,9 @@ def home():
 def getAccessToken():
     print(request.args)
     code = request.args["code"]
+    state = request.args['state']
+    if state != "SPLITIFY_APP":
+        return "State doesnt match", 404
 
     params = {
         "client_id": app.config["SPLITWISE_CLIENT_ID"],
@@ -53,6 +56,17 @@ def getAccessToken():
     response = requests.post(
         "https://secure.splitwise.com/oauth/token", data=params, headers=headers)
     return response.json()
+
+
+@app.route("/getUserAvatar")
+def getUserAvatar():
+    token = request.args["token"]
+    response = requests.get("https://secure.splitwise.com/api/v3.0/get_current_user", headers={
+        "Authorization": f"Bearer {token}"
+    })
+    user_info = response.json()
+
+    return jsonify({"avatar": user_info["user"]["picture"]["large"]}), 200
 
 
 app.run()
