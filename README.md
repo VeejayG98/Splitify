@@ -35,4 +35,6 @@ To start the frontend interface, the following steps must be performed.
 
 1. Adding OAuth2 authentication login to Splitwise to directly push the generated bill to Splitwise.
 
-2. Adding a Splashpage/Welcome page.
+2. Select participants from my Splitwise friends list.
+
+3. Adding a Splashpage/Welcome page.
