@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Card,
   CardActions,
@@ -13,11 +14,13 @@ import {
 import { green } from "@mui/material/colors";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
 
 function BillInfo() {
+  const [friends, setFriends] = useState([]);
+
   const {
     step,
     setStep,
@@ -28,6 +31,23 @@ function BillInfo() {
     billName,
     setBillName,
   } = useContext(BillContext);
+
+  useEffect(() => {
+    fetch(
+      "http://127.0.0.1:5000/getParticipants?token=" +
+        localStorage.getItem("accessToken") +
+        "&search=" +
+        name,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => setFriends(data.friends));
+  }, []);
 
   const addParticipant = () => {
     if (name.length !== 0) {
@@ -97,7 +117,37 @@ function BillInfo() {
               </Typography>
             </Grid>
             <Grid item>
-              <TextField
+              <Autocomplete
+                options={friends.map((friend) => (
+                  friend.last_name ? `${friend.first_name} ${friend.last_name}` : `${friend.first_name}`
+                ))}
+                autoHighlight
+                onChange={(e, value) => setName(value)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Participant Name"
+                  variant="filled"
+                  required
+                  color="success"
+                  // onChange={(e) => setName(e.target.value)}
+                  // InputProps={{
+                  //   startAdornment: (
+                  //     <InputAdornment position="start">
+                  //       <AccountCircleRoundedIcon />
+                  //     </InputAdornment>
+                  //   ),
+                  // }}
+                  // onKeyDown={(e) => {
+                  //   if (e.key == "Enter") {
+                  //     addParticipant();
+                  //     setName("");
+                  //   }
+                  // }}
+                  value={name}
+                />
+                )}
+              />
+              
+              {/* <TextField
                 label="Participant Name"
                 variant="filled"
                 required
@@ -117,7 +167,9 @@ function BillInfo() {
                   }
                 }}
                 value={name}
-              />
+              /> */}
+
+
             </Grid>
             <Grid item marginTop={2}>
               <Button

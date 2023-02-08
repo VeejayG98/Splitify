@@ -22,7 +22,7 @@ function Home() {
       console.log("Please log in");
       navigate("/");
     }
-  });
+  }, []);
 
   return (
     <div>
