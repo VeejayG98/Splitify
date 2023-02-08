@@ -69,4 +69,32 @@ def getUserAvatar():
     return jsonify({"avatar": user_info["user"]["picture"]["large"]}), 200
 
 
+@app.route("/getParticipants")
+def getParticipants():
+    token = request.args["token"]
+    search = request.args["search"].lower()
+    response = requests.get("https://secure.splitwise.com/api/v3.0/get_friends", headers={
+        "Authorization": f"Bearer {token}"
+    })
+    friends_list = response.json()
+    # print(friends_list)
+
+    if search:
+        new_friends_list = []
+        for friend in friends_list["friends"]:
+            if friend["first_name"].startswith(search) or friend["last_name"].startswith(search):
+                new_friends_list.append({"first_name": friend["first_name"],
+                                         "last_name": friend["last_name"],
+                                         "id": friend["id"],
+                                         "avatar": friend["picture"]["large"]})
+
+        friends_list = new_friends_list
+    else:
+        friends_list = [{"first_name": friend["first_name"],
+                        "last_name": friend["last_name"],
+                         "id": friend["id"],
+                         "avatar": friend["picture"]["large"]} for friend in friends_list["friends"]]
+    return jsonify({"friends": friends_list}), 200
+
+
 app.run()
