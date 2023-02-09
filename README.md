@@ -1,4 +1,4 @@
-# Splitify
+# [Splitify](https://splitify.herokuapp.com/) - Expense Splitting Tool for Splitwise
 A full-stack web application for managing expense splits among friends. This application allows to calculate the split of each person involved in a huge bill (such as a grocery bill) in a quick and seamless process.
 
 
