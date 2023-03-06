@@ -6,6 +6,7 @@ import {
   TextField,
   InputAdornment,
   Button,
+  Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext } from "react";
@@ -159,12 +160,12 @@ const ItemBox = ({ id }) => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id={participant}
+                      id={participant.first_name}
                       onChange={handleCheckBox}
-                      checked={items[id][2].hasOwnProperty(participant)}
+                      checked={items[id][2].hasOwnProperty(participant.first_name)}
                     />
                   }
-                  label={participant}
+                  label={participant.first_name}
                 />
               </Grid>
             ))}

@@ -11,7 +11,7 @@ function Home() {
 
   const [step, setStep] = useState(1);
   const [participants, setParticipants] = useState(new Set());
-  const [name, setName] = useState("");
+  const [personinfo, setPersonInfo] = useState({});
   const [billName, setBillName] = useState("");
   const [items, setItems] = useState([["", 0, {}]]);
   const [numItems, setNumItems] = useState(1);
@@ -44,8 +44,8 @@ function Home() {
           setStep,
           participants,
           setParticipants,
-          name,
-          setName,
+          personinfo,
+          setPersonInfo,
           billName,
           setBillName,
           items,

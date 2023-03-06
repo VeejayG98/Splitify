@@ -26,18 +26,20 @@ function BillInfo() {
     setStep,
     participants,
     setParticipants,
-    name,
-    setName,
+    personinfo,
+    setPersonInfo,
     billName,
     setBillName,
   } = useContext(BillContext);
+
+  const [test, setTest] = useState("");
 
   useEffect(() => {
     fetch(
       "http://127.0.0.1:5000/getParticipants?token=" +
         localStorage.getItem("accessToken") +
         "&search=" +
-        name,
+        personinfo,
       {
         headers: {
           "Content-Type": "application/json",
@@ -50,12 +52,16 @@ function BillInfo() {
   }, []);
 
   const addParticipant = () => {
-    if (name.length !== 0) {
+    if (personinfo.length !== 0) {
       setParticipants((oldParticipants) => {
-        oldParticipants.add(name);
+        console.log(personinfo);
+        // let first_name = name.first_name;
+        // let [first_name] = name;
+        // console.log([first_name]);
+        oldParticipants.add(personinfo);
         return oldParticipants;
       });
-      setName("");
+      setPersonInfo("");
     }
   };
 
@@ -118,35 +124,18 @@ function BillInfo() {
             </Grid>
             <Grid item>
               <Autocomplete
-                options={friends.map((friend) => (
-                  friend.last_name ? `${friend.first_name} ${friend.last_name}` : `${friend.first_name}`
-                ))}
-                autoHighlight
-                onChange={(e, value) => setName(value)}
+                options={friends}
+                onChange={(e, value) => setPersonInfo(value)}
                 renderInput={(params) => (
-                  <TextField {...params} label="Participant Name"
-                  variant="filled"
-                  required
-                  color="success"
-                  // onChange={(e) => setName(e.target.value)}
-                  // InputProps={{
-                  //   startAdornment: (
-                  //     <InputAdornment position="start">
-                  //       <AccountCircleRoundedIcon />
-                  //     </InputAdornment>
-                  //   ),
-                  // }}
-                  // onKeyDown={(e) => {
-                  //   if (e.key == "Enter") {
-                  //     addParticipant();
-                  //     setName("");
-                  //   }
-                  // }}
-                  value={name}
-                />
+                  <TextField {...params} label="Friends" />
                 )}
+                getOptionLabel={(option) => {
+                  if (option.last_name)
+                    return option.first_name + " " + option.last_name;
+                  else return option.first_name;
+                }}
               />
-              
+
               {/* <TextField
                 label="Participant Name"
                 variant="filled"
@@ -168,8 +157,6 @@ function BillInfo() {
                 }}
                 value={name}
               /> */}
-
-
             </Grid>
             <Grid item marginTop={2}>
               <Button
@@ -192,7 +179,7 @@ function BillInfo() {
                 {[...participants].map((participant, pid) => (
                   <Grid item key={pid}>
                     <AccountCircleRoundedIcon />
-                    <Typography variant="h7">{participant}</Typography>
+                    <Typography variant="h7">{participant.first_name}</Typography>
                     <IconButton onClick={deleteParticipant} id={participant}>
                       <CancelRoundedIcon
                         fontSize="small"
