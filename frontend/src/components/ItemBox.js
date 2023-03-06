@@ -32,7 +32,7 @@ const ItemBox = ({ id }) => {
   const selectAll = () => {
     let newCost = items[id][1] / participants.size;
     let newSplit = Object.fromEntries(
-      [...participants].map((key) => [key, newCost])
+      [...participants].map((key) => [key.first_name, newCost])
     );
     const res = [...items];
     res[id][2] = newSplit;
