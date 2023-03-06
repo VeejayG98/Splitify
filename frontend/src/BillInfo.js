@@ -66,9 +66,20 @@ function BillInfo() {
   };
 
   const deleteParticipant = (event) => {
+    const id = Number(event.currentTarget.id);
+    let deletedParticipant;
+    for (const participant of participants) {
+      console.log(participant.id);
+      if (participant.id === id) {
+        deletedParticipant = participant;
+        break;
+      }
+    }
+
     setParticipants((oldParticipants) => {
       oldParticipants = new Set([...oldParticipants]);
-      oldParticipants.delete(event.currentTarget.id);
+      oldParticipants.delete(deletedParticipant);
+      console.log(oldParticipants);
       return oldParticipants;
     });
   };
@@ -179,8 +190,10 @@ function BillInfo() {
                 {[...participants].map((participant, pid) => (
                   <Grid item key={pid}>
                     <AccountCircleRoundedIcon />
-                    <Typography variant="h7">{participant.first_name}</Typography>
-                    <IconButton onClick={deleteParticipant} id={participant}>
+                    <Typography variant="h7">
+                      {participant.first_name}
+                    </Typography>
+                    <IconButton onClick={deleteParticipant} id={participant.id}>
                       <CancelRoundedIcon
                         fontSize="small"
                         // sx={{ marginBottom: 5 }}
