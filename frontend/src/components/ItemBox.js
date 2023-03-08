@@ -18,6 +18,7 @@ const ItemBox = ({ id }) => {
   const updateSplit = () => {
     if (Object.keys(items[id][2]).length !== 0) {
       let newCost = items[id][1] / Object.keys(items[id][2]).length;
+      Number(newCost.toFixed(2));
       let newSplit = Object.fromEntries(
         Object.keys(items[id][2]).map((key) => [key, newCost])
       );
@@ -31,6 +32,7 @@ const ItemBox = ({ id }) => {
 
   const selectAll = () => {
     let newCost = items[id][1] / participants.size;
+    newCost = Number(newCost.toFixed(2));
     let newSplit = Object.fromEntries(
       [...participants].map((key) => [key.first_name, newCost])
     );
@@ -51,6 +53,7 @@ const ItemBox = ({ id }) => {
       setItems((items) => {
         let currentSplit = items[id][2];
         let newCost = items[id][1] / (Object.keys(currentSplit).length + 1);
+        newCost = Number(newCost.toFixed(2));
         const newSplit = {
           ...Object.fromEntries(
             Object.keys(currentSplit).map((key) => [key, newCost])
@@ -66,6 +69,7 @@ const ItemBox = ({ id }) => {
       setItems((items) => {
         let currentSplit = items[id][2];
         let newCost = items[id][1] / (Object.keys(currentSplit).length - 1);
+        newCost = Number(newCost.toFixed(2));
         const { [event.target.id]: removedProperty, ...rest } = currentSplit;
         const newSplit = Object.fromEntries(
           Object.keys(rest).map((key) => [key, newCost])
