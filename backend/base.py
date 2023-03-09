@@ -135,4 +135,39 @@ def findCommonGroups():
     return jsonify({"common_groups": common_groups}), 200
 
 
+@app.route("/add_expense", methods=["POST"])
+def addExpense():
+    print("hello")
+    expense = request.json
+    body = {
+        "cost": expense["cost"],
+        "description": expense["description"],
+        "group_id": expense["splitwise_group"]
+    }
+
+    for i, participant in enumerate(expense["participants"]):
+        user_key = f"users__{i}__"
+        body[user_key + "user_id"] = participant
+        if participant == expense["paid_by"]:
+            body[user_key + "paid_share"] = str(expense["cost"])
+        else:
+            body[user_key + "paid_share"] = "0"
+        body[user_key +
+             "owed_share"] = str(expense["splits"][str(participant)])
+
+    # print(body)
+
+    response = requests.post("https://secure.splitwise.com/api/v3.0/create_expense", headers={
+        "Authorization": f"Bearer {expense['token']}"
+    },
+        data=body)
+
+    print(response.text)
+
+    if response.status_code == 200:
+        return "Success", 200
+
+    return "Failure", 400
+
+
 app.run()
