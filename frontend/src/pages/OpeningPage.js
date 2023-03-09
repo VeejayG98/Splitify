@@ -14,7 +14,12 @@ function OpeningPage() {
     const state = urlParams.get("state");
 
     if (localStorage.getItem("accessToken")) {
-      navigate("/home");
+      const time = new Date().getTime();
+      if (time - localStorage.getItem("accessTokenTime") > 24 * 60 * 1000) {
+        localStorage.clear();
+      } else {
+        navigate("/home");
+      }
     }
 
     if (code && state) {
@@ -34,6 +39,8 @@ function OpeningPage() {
         // .then((data) => console.log(data));
         .then((data) => {
           localStorage.setItem("accessToken", data["access_token"]);
+          const time = new Date().getTime();
+          localStorage.setItem("accessTokenTime", time);
           setAccessToken(data["access_token"]);
         });
     }
