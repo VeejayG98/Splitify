@@ -50,7 +50,7 @@ const SplitupTable = () => {
             </TableCell>
             <TableCell>{totals["totalPrice"]}</TableCell>
             {[...participants].map((participant, id) => (
-              <TableCell key={id}>{totals[participant.first_name]}</TableCell>
+              <TableCell key={id}>{totals[participant.id]}</TableCell>
             ))}
           </TableRow>
         </TableBody>
