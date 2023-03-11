@@ -17,6 +17,7 @@ import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
 import { useContext, useEffect, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
+import AutofillFriends from "./components/AutofillFriends";
 
 function BillInfo() {
   const [friends, setFriends] = useState([]);
@@ -134,17 +135,9 @@ function BillInfo() {
               </Typography>
             </Grid>
             <Grid item>
-              <Autocomplete
-                options={friends}
-                onChange={(e, value) => setPersonInfo(value)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Friends" />
-                )}
-                getOptionLabel={(option) => {
-                  if (option.last_name)
-                    return option.first_name + " " + option.last_name;
-                  else return option.first_name;
-                }}
+              <AutofillFriends
+                friends={friends}
+                setPersonInfo={setPersonInfo}
               />
 
               {/* <TextField
