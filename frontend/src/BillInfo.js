@@ -138,6 +138,7 @@ function BillInfo() {
               <AutofillFriends
                 friends={friends}
                 setPersonInfo={setPersonInfo}
+                addParticipant={addParticipant}
               />
 
               {/* <TextField
