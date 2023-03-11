@@ -32,12 +32,13 @@ function ItemsPage() {
   }
 
   const calculateTotals = () => {
-    let tempTotals = Object.fromEntries([...participants].map((participant) => [participant.first_name, 0]));
+    let tempTotals = Object.fromEntries([...participants].map((participant) => [participant.id, 0]));
     console.log(items);
     for (let x in items){
       for (const participant of participants){
         if (items[x][2].hasOwnProperty(participant.first_name))
-          tempTotals[participant.first_name] += items[x][2][participant.first_name];
+          tempTotals[participant.id] += items[x][2][participant.first_name];
+          tempTotals[participant.id] = Number(tempTotals[participant.id].toFixed(2))
       }
     }
     const totals = Object.values(tempTotals).reduce((totalPrice, price) => totalPrice + price, 0);

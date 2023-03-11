@@ -15,17 +15,26 @@ import { BillContext } from "../context/BillContext";
 const ItemBox = ({ id }) => {
   const { participants, items, setItems } = useContext(BillContext);
 
+  const adjustSplit = (splitValue, n, itemCost) => {
+    return Number((itemCost - (splitValue * n)).toFixed(2));
+  }
+
+  const getRandomParticipant = (participants) => {
+    return participants[Math.floor(Math.random() * participants.length)]
+  }
+
   const updateSplit = () => {
     if (Object.keys(items[id][2]).length !== 0) {
       let newCost = items[id][1] / Object.keys(items[id][2]).length;
-      Number(newCost.toFixed(2));
+      newCost = Number(newCost.toFixed(2));
+      const splitDiff = adjustSplit(newCost, Object.keys(items[id][2]).length, items[id][1]);
       let newSplit = Object.fromEntries(
         Object.keys(items[id][2]).map((key) => [key, newCost])
       );
-      console.log(newSplit);
+      const randomParticipant = getRandomParticipant(Object.keys(newSplit));
+      newSplit[randomParticipant] += splitDiff;
       const res = [...items];
       res[id][2] = newSplit;
-      console.log(res);
       setItems(res);
     }
   };
@@ -33,9 +42,12 @@ const ItemBox = ({ id }) => {
   const selectAll = () => {
     let newCost = items[id][1] / participants.size;
     newCost = Number(newCost.toFixed(2));
+    const splitDiff = adjustSplit(newCost, participants.size, items[id][1]);
     let newSplit = Object.fromEntries(
       [...participants].map((key) => [key.first_name, newCost])
     );
+    const randomParticipant = getRandomParticipant(Object.keys(newSplit));
+    newSplit[randomParticipant] += splitDiff;
     const res = [...items];
     res[id][2] = newSplit;
     setItems(res);
@@ -54,12 +66,15 @@ const ItemBox = ({ id }) => {
         let currentSplit = items[id][2];
         let newCost = items[id][1] / (Object.keys(currentSplit).length + 1);
         newCost = Number(newCost.toFixed(2));
+        const splitDiff = adjustSplit(newCost, Object.keys(currentSplit).length + 1, items[id][1]);
         const newSplit = {
           ...Object.fromEntries(
             Object.keys(currentSplit).map((key) => [key, newCost])
           ),
           [event.target.id]: newCost,
         };
+        const randomParticipant = getRandomParticipant(Object.keys(newSplit));
+        newSplit[randomParticipant] += splitDiff;
         const res = [...items];
         res[id][2] = newSplit;
         return res;
@@ -70,10 +85,13 @@ const ItemBox = ({ id }) => {
         let currentSplit = items[id][2];
         let newCost = items[id][1] / (Object.keys(currentSplit).length - 1);
         newCost = Number(newCost.toFixed(2));
+        const splitDiff = adjustSplit(newCost, Object.keys(currentSplit).length - 1, items[id][1]);
         const { [event.target.id]: removedProperty, ...rest } = currentSplit;
         const newSplit = Object.fromEntries(
           Object.keys(rest).map((key) => [key, newCost])
         );
+        const randomParticipant = getRandomParticipant(Object.keys(newSplit));
+        newSplit[randomParticipant] += splitDiff;
         const res = [...items];
         res[id][2] = newSplit;
         return res;
@@ -198,13 +216,13 @@ const ItemBox = ({ id }) => {
         </Button>
       </Box>
 
-      {/* {Object.keys(items[id][2]).map((key) => {
+      {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
             {key}: {items[id][2][key]}
           </Typography>
         );
-      })} */}
+      })}
     </Paper>
   );
 };
