@@ -13,16 +13,18 @@ import {
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
 import SplitupTable from "../components/SplitupTable";
+import SplitwiseForm from "../components/SplitwiseForm";
 import { BillContext } from "../context/BillContext";
 
 function GenerateBillPage() {
-  const { billName, step, setStep, participants, items, totals } = useContext(BillContext);
+  const { billName, step, setStep, participants, items, totals } =
+    useContext(BillContext);
   const [commonGroups, setCommonGroups] = useState([]);
   const [splitwiseGroup, setSplitwiseGroup] = useState(null);
   const [paidBy, setPaidBy] = useState(null);
   let cost = 0;
-  for(let i = 0; i < items.length; i++){
-    cost = cost + items[i][1]
+  for (let i = 0; i < items.length; i++) {
+    cost = cost + items[i][1];
   }
 
   const getCommonGroups = () => {
@@ -65,10 +67,10 @@ function GenerateBillPage() {
         participants: participantIDs,
         splitwise_group: splitwiseGroup,
         paid_by: paidBy,
-        splits: totals
-      })
-    })
-  }
+        splits: totals,
+      }),
+    });
+  };
 
   return (
     <>
@@ -100,49 +102,38 @@ function GenerateBillPage() {
               Modify Bill
             </Button>
           </Box>
-          <Box display="flex" justifyContent="flex-end">
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ margin: 2 }}
-              onClick={getCommonGroups}
-            >
-              Add to Splitwise
-            </Button>
-          </Box>
+          {commonGroups.length !== 0 ? (
+            <Box display="flex" flexDirection="column" margin={2}>
+              <SplitwiseForm
+                commonGroups={commonGroups}
+                setSplitwiseGroup={setSplitwiseGroup}
+                participants={participants}
+                setPaidBy={setPaidBy}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ margin: 2 }}
+                onClick={addExpense}
+              >
+                Push to Splitwise
+              </Button>
+            </Box>
+          ) : (
+            <Box display="flex" justifyContent="flex-end">
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ margin: 2 }}
+                onClick={getCommonGroups}
+              >
+                Add to Splitwise
+              </Button>
+            </Box>
+          )}
         </Card>
       </Box>
-      <Box display="flex" justifyContent="center">
-        <FormControl>
-          <FormLabel>Splitwise Group</FormLabel>
-          <RadioGroup
-            onChange={(event) => setSplitwiseGroup(Number(event.target.value))}
-          >
-            {commonGroups.map((group) => (
-              <FormControlLabel
-                value={group.id}
-                control={<Radio />}
-                label={group.name}
-                id={group.id}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Paid by</FormLabel>
-          <RadioGroup onChange={(event) => setPaidBy(Number(event.target.value))}>
-            {[...participants].map((participant) => (
-              <FormControlLabel
-                value={participant.id}
-                control={<Radio />}
-                label={participant.first_name}
-                id={participant.id}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-      </Box>
-      <Box display="flex" justifyContent="flex-end" marginBottom={10}>
+      {/* <Box display="flex" justifyContent="flex-end" marginBottom={10}>
         <Button
           variant="contained"
           color="primary"
@@ -151,7 +142,7 @@ function GenerateBillPage() {
         >
           Push to Splitwise
         </Button>
-      </Box>
+      </Box> */}
     </>
   );
 }
