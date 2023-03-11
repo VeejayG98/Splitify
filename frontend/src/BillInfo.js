@@ -53,7 +53,7 @@ function BillInfo() {
   }, []);
 
   const addParticipant = () => {
-    if (personinfo.length !== 0) {
+    if (Object.keys(personinfo).length !== 0) {
       setParticipants((oldParticipants) => {
         console.log(personinfo);
         // let first_name = name.first_name;
