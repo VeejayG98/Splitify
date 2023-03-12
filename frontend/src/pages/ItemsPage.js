@@ -2,6 +2,7 @@ import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
+import ErrorSnackBar from "../components/ErrorSnackBar";
 import ItemBox from "../components/ItemBox";
 import { BillContext } from "../context/BillContext";
 
@@ -17,33 +18,65 @@ function ItemsPage() {
     numItems,
     setNumItems,
     totals,
-    setTotals
+    setTotals,
   } = useContext(BillContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const errorMessage = "Please fill in the details of the last item";
 
+  const closeSnackBar = (event, reason) => {
+    setOpenSnackbar(false);
+  };
 
   const addNewItem = () => {
+    const lastItem = items[numItems - 1];
+
+    if (
+      lastItem[0] === "" ||
+      lastItem[1] === 0 ||
+      Object.keys(lastItem[2]).length === 0
+    ) {
+      setOpenSnackbar(true);
+      return;
+    }
+
     setNumItems(numItems + 1);
     setItems([...items, ["", 0, {}]]);
   };
 
   const generateBill = () => {
+    const lastItem = items[numItems - 1];
+    if (
+      lastItem[0] === "" ||
+      lastItem[1] === 0 ||
+      Object.keys(lastItem[2]).length === 0
+    ) {
+      setOpenSnackbar(true);
+      return;
+    }
     calculateTotals();
     setStep(step + 1);
-  }
+  };
 
   const calculateTotals = () => {
-    let tempTotals = Object.fromEntries([...participants].map((participant) => [participant.id, 0]));
+    let tempTotals = Object.fromEntries(
+      [...participants].map((participant) => [participant.id, 0])
+    );
     console.log(items);
-    for (let x in items){
-      for (const participant of participants){
+    for (let x in items) {
+      for (const participant of participants) {
         if (items[x][2].hasOwnProperty(participant.first_name))
           tempTotals[participant.id] += items[x][2][participant.first_name];
-          tempTotals[participant.id] = Number(tempTotals[participant.id].toFixed(2))
+        tempTotals[participant.id] = Number(
+          tempTotals[participant.id].toFixed(2)
+        );
       }
     }
-    const totals = Object.values(tempTotals).reduce((totalPrice, price) => totalPrice + price, 0);
-    setTotals({...tempTotals, totalPrice: totals});
-  }
+    const totals = Object.values(tempTotals).reduce(
+      (totalPrice, price) => totalPrice + price,
+      0
+    );
+    setTotals({ ...tempTotals, totalPrice: totals });
+  };
 
   return (
     <Grid
@@ -88,10 +121,6 @@ function ItemsPage() {
                 </Grid>
               );
             })}
-
-            {/* <Grid item>
-              <ItemBox />
-            </Grid> */}
           </Grid>
 
           <Box display="flex" justifyContent="flex-end" marginTop={3}>
@@ -121,6 +150,11 @@ function ItemsPage() {
             Generate Bill
           </Button>
         </Box>
+        <ErrorSnackBar
+          open={openSnackbar}
+          message={errorMessage}
+          handleClose={closeSnackBar}
+        />
       </Card>
     </Grid>
   );

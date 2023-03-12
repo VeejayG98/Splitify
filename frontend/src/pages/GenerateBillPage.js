@@ -81,7 +81,7 @@ function GenerateBillPage() {
         justifyContent="center"
         padding={2}
       >
-        <Card sx={{ minWidth: 650, maxWidth: 650 }}>
+        <Card sx={{ minWidth: 650 }}>
           <CardContent>
             <Box display="flex" alignContent="center" justifyContent="center">
               <Typography variant="h4" sx={{ fontWeight: 550 }}>

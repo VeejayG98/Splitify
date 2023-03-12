@@ -9,11 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { BillContext } from "../context/BillContext";
 
 const ItemBox = ({ id }) => {
   const { participants, items, setItems } = useContext(BillContext);
+  const [nameError, setNameError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
 
   const getSplitDiff = (splitValue, n, itemCost) => {
     return Number((itemCost - splitValue * n).toFixed(2));
@@ -165,6 +167,8 @@ const ItemBox = ({ id }) => {
 
   const handleItemNameChange = (event) => {
     let itemName = event.currentTarget.value;
+    if (itemName === "") setNameError(true);
+    else setNameError(false);
     setItems((items) => {
       const tempItems = [...items];
       tempItems[id][0] = itemName;
@@ -174,6 +178,8 @@ const ItemBox = ({ id }) => {
 
   const handleItemBillChange = (event) => {
     let itemCost = Number(event.currentTarget.value);
+    if (itemCost === 0) setPriceError(true);
+    else setPriceError(false);
     setItems((items) => {
       const tempItems = [...items];
       tempItems[id][1] = itemCost;
@@ -208,7 +214,10 @@ const ItemBox = ({ id }) => {
             variant="filled"
             required
             color="primary"
+            error={nameError}
+            helperText={nameError ? "Enter a name for the item" : ""}
             onChange={handleItemNameChange}
+            onFocus={handleItemNameChange}
             id={`${id}`}
             defaultValue={items[id][0]}
           />
@@ -226,6 +235,8 @@ const ItemBox = ({ id }) => {
             type="number"
             required
             color="primary"
+            error={priceError}
+            helperText={priceError ? "Enter a valid price" : ""}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">$</InputAdornment>
@@ -235,6 +246,7 @@ const ItemBox = ({ id }) => {
               handleItemBillChange(event);
               updateSplit();
             }}
+            onFocus={handleItemBillChange}
             id={`${id}`}
             defaultValue={items[id][1]}
           />

@@ -18,9 +18,11 @@ import { useContext, useEffect, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
 import AutofillFriends from "./components/AutofillFriends";
+import ErrorSnackBar from "./components/ErrorSnackBar";
 
 function BillInfo() {
   const [friends, setFriends] = useState([]);
+  const [nameError, setNameError] = useState(false);
 
   const {
     step,
@@ -33,7 +35,8 @@ function BillInfo() {
     setBillName,
   } = useContext(BillContext);
 
-  const [test, setTest] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const errorMessage = "Please add bill name and participants";
 
   useEffect(() => {
     fetch(
@@ -62,7 +65,7 @@ function BillInfo() {
         oldParticipants.add(personinfo);
         return oldParticipants;
       });
-      setPersonInfo("");
+      setPersonInfo({});
     }
   };
 
@@ -83,6 +86,21 @@ function BillInfo() {
       console.log(oldParticipants);
       return oldParticipants;
     });
+  };
+
+  const handleBillName = (event) => {
+    const billName = event.target.value;
+    if (billName === "") setNameError(true);
+    else setNameError(false);
+    setBillName(billName);
+  };
+
+  const goToItemsPage = () => {
+    if (billName === "" || participants.size === 0) {
+      setOpenSnackbar(true);
+      return;
+    }
+    setStep(step + 1);
   };
 
   return (
@@ -112,7 +130,11 @@ function BillInfo() {
                 variant="filled"
                 required
                 color="success"
-                onChange={(e) => setBillName(e.target.value)}
+                error={nameError}
+                helperText={
+                  nameError ? "Please give a valid name for the bill" : ""
+                }
+                onChange={handleBillName}
                 defaultValue={billName}
               />
             </Grid>
@@ -204,11 +226,16 @@ function BillInfo() {
             variant="contained"
             color="primary"
             sx={{ height: 40 }}
-            onClick={() => setStep(step + 1)}
+            onClick={goToItemsPage}
           >
             Next
           </Button>
         </Box>
+        <ErrorSnackBar
+          open={openSnackbar}
+          message={errorMessage}
+          handleClose={() => setOpenSnackbar(false)}
+        />
       </Card>
     </Grid>
   );
