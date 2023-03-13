@@ -7,8 +7,18 @@ import backendAPI from "../utils/network";
 function OpeningPage() {
   const [accessToken, setAccessToken] = useState("");
   const navigate = useNavigate();
+  const [clientID, setClientID] = useState("");
 
   useEffect(() => {
+    fetch(backendAPI + "/get_client_id", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json)
+      .then((data) => setClientID(data.client_id));
+
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const code = urlParams.get("code");
@@ -45,7 +55,7 @@ function OpeningPage() {
     if (localStorage.getItem("accessToken")) navigate("/home");
   }, [accessToken]);
 
-  const oAuth2CodeLink = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&state=SPLITIFY_APP`;
+  const oAuth2CodeLink = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${clientID}&state=SPLITIFY_APP`;
   return (
     <div
       style={{

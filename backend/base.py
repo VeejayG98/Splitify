@@ -20,6 +20,9 @@ SPLITWISE_API_VERSION = "api/v3.0"
 def home():
     return "Hello!"
 
+@app.route("/get_client_id")
+def getClientID():
+    return jsonify({"client_id": app.config["SPLITWISE_CLIENT_ID"]}), 200
 
 @app.route('/get_access_token')
 def getAccessToken():
