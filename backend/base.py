@@ -37,7 +37,7 @@ def getAccessToken():
         "client_secret": app.config["SPLITWISE_CLIENT_SECRET"],
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": "http://localhost:3000/"
+        "redirect_uri": "https://splitify-xi.vercel.app/"
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded",
                "Accept": "application/json"}
