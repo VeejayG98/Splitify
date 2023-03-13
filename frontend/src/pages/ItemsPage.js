@@ -1,7 +1,8 @@
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import ErrorSnackBar from "../components/ErrorSnackBar";
 import ItemBox from "../components/ItemBox";
 import { BillContext } from "../context/BillContext";
 
@@ -17,32 +18,78 @@ function ItemsPage() {
     numItems,
     setNumItems,
     totals,
-    setTotals
+    setTotals,
   } = useContext(BillContext);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const closeSnackBar = (event, reason) => {
+    setOpenSnackbar(false);
+  };
 
   const addNewItem = () => {
+    const lastItem = items[numItems - 1];
+
+    if (
+      lastItem[0] === "" ||
+      lastItem[1] === 0 ||
+      Object.keys(lastItem[2]).length === 0
+    ) {
+      setErrorMessage("Please fill in the details of the last item");
+      setOpenSnackbar(true);
+      return;
+    }
+
     setNumItems(numItems + 1);
     setItems([...items, ["", 0, {}]]);
   };
 
+  const deleteItem = (event) => {
+    if (items.length === 1) {
+      setErrorMessage("There has to be a minimum of one item in the bill");
+      setOpenSnackbar(true);
+      return;
+    }
+    const id = Number(event.currentTarget.id);
+    setNumItems(numItems - 1);
+    setItems(items.filter((_, i) => i !== id));
+  };
+
   const generateBill = () => {
+    const lastItem = items[numItems - 1];
+    if (
+      lastItem[0] === "" ||
+      lastItem[1] === 0 ||
+      Object.keys(lastItem[2]).length === 0
+    ) {
+      setErrorMessage("Please fill in the details of the last item");
+      setOpenSnackbar(true);
+      return;
+    }
     calculateTotals();
     setStep(step + 1);
-  }
+  };
 
   const calculateTotals = () => {
-    let tempTotals = Object.fromEntries([...participants].map((participant) => [participant, 0]));
+    let tempTotals = Object.fromEntries(
+      [...participants].map((participant) => [participant.id, 0])
+    );
     console.log(items);
-    for (let x in items){
-      for (const participant of participants.values()){
-        if (items[x][2].hasOwnProperty(participant))
-          tempTotals[participant] += items[x][2][participant];
+    for (let x in items) {
+      for (const participant of participants) {
+        if (items[x][2].hasOwnProperty(participant.first_name))
+          tempTotals[participant.id] += items[x][2][participant.first_name];
+        tempTotals[participant.id] = Number(
+          tempTotals[participant.id].toFixed(2)
+        );
       }
     }
-    const totals = Object.values(tempTotals).reduce((totalPrice, price) => totalPrice + price, 0);
-    setTotals({...tempTotals, totalPrice: totals});
-  }
+    const totals = Object.values(tempTotals).reduce(
+      (totalPrice, price) => totalPrice + price,
+      0
+    );
+    setTotals({ ...tempTotals, totalPrice: totals });
+  };
 
   return (
     <Grid
@@ -52,7 +99,7 @@ function ItemsPage() {
       padding={2}
       color={green[600]}
     >
-      <Card sx={{ minWidth: 650, maxWidth: 650 }}>
+      <Card sx={{ minWidth: 650, maxWidth: 650 }} elevation={5}>
         <CardContent>
           <Grid
             container
@@ -83,14 +130,10 @@ function ItemsPage() {
             {Array.from({ length: numItems }, (_, id) => {
               return (
                 <Grid item key={id}>
-                  <ItemBox id={id} />
+                  <ItemBox id={id} key={id} deleteItem={deleteItem} />
                 </Grid>
               );
             })}
-
-            {/* <Grid item>
-              <ItemBox />
-            </Grid> */}
           </Grid>
 
           <Box display="flex" justifyContent="flex-end" marginTop={3}>
@@ -120,6 +163,11 @@ function ItemsPage() {
             Generate Bill
           </Button>
         </Box>
+        <ErrorSnackBar
+          open={openSnackbar}
+          message={errorMessage}
+          handleClose={closeSnackBar}
+        />
       </Card>
     </Grid>
   );

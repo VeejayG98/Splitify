@@ -1,10 +1,8 @@
-import { Fab, ThemeProvider } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import NavBar from "../components/Navbar";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import { green } from "@mui/material/colors";
-import { createTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BillContext } from "../context/BillContext";
 import PageSwitcher from "./PageSwitcher";
 
@@ -13,56 +11,54 @@ function Home() {
 
   const [step, setStep] = useState(1);
   const [participants, setParticipants] = useState(new Set());
-  const [name, setName] = useState("");
+  const [personinfo, setPersonInfo] = useState({});
   const [billName, setBillName] = useState("");
   const [items, setItems] = useState([["", 0, {}]]);
   const [numItems, setNumItems] = useState(1);
   const [totals, setTotals] = useState({});
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: green[600],
-      },
-    },
-  });
+  useEffect(() => {
+    if (!localStorage.getItem("accessToken")) {
+      console.log("Please log in");
+      navigate("/");
+    }
+  }, []);
 
   return (
-    <div>
+    <Box sx={{ height: "100vh" }}>
       <NavBar />
-      <ThemeProvider theme={theme}>
-        <Fab
-          variant="extended"
-          aria-label="add bill"
-          color="primary"
-          sx={{ position: "fixed", bottom: "20px", right: "20px" }}
-          onClick={() => {}}
-        >
-          <ReceiptLongRoundedIcon sx={{ mr: 1 }} />
-          New Bill
-        </Fab>
-        <BillContext.Provider
-          value={{
-            step,
-            setStep,
-            participants,
-            setParticipants,
-            name,
-            setName,
-            billName,
-            setBillName,
-            items,
-            setItems,
-            numItems,
-            setNumItems,
-            totals, 
-            setTotals
-          }}
-        >
-          <PageSwitcher />
-        </BillContext.Provider>
-      </ThemeProvider>
-    </div>
+
+      <Fab
+        variant="extended"
+        aria-label="add bill"
+        color="primary"
+        sx={{ position: "fixed", bottom: "20px", right: "20px" }}
+        onClick={() => {}}
+      >
+        <ReceiptLongRoundedIcon sx={{ mr: 1 }} />
+        New Bill
+      </Fab>
+      <BillContext.Provider
+        value={{
+          step,
+          setStep,
+          participants,
+          setParticipants,
+          personinfo,
+          setPersonInfo,
+          billName,
+          setBillName,
+          items,
+          setItems,
+          numItems,
+          setNumItems,
+          totals,
+          setTotals,
+        }}
+      >
+        <PageSwitcher />
+      </BillContext.Provider>
+    </Box>
   );
 }
 export default Home;

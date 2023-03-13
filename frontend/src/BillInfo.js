@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Card,
   CardActions,
@@ -13,38 +14,93 @@ import {
 import { green } from "@mui/material/colors";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
+import AutofillFriends from "./components/AutofillFriends";
+import ErrorSnackBar from "./components/ErrorSnackBar";
 
 function BillInfo() {
+  const [friends, setFriends] = useState([]);
+  const [nameError, setNameError] = useState(false);
+
   const {
     step,
     setStep,
     participants,
     setParticipants,
-    name,
-    setName,
+    personinfo,
+    setPersonInfo,
     billName,
     setBillName,
   } = useContext(BillContext);
 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const errorMessage = "Please add bill name and participants";
+
+  useEffect(() => {
+    fetch(
+      "http://127.0.0.1:5000/getParticipants?token=" +
+        localStorage.getItem("accessToken") +
+        "&search=" +
+        personinfo,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => setFriends(data.friends));
+  }, []);
+
   const addParticipant = () => {
-    if (name.length !== 0) {
+    if (Object.keys(personinfo).length !== 0) {
       setParticipants((oldParticipants) => {
-        oldParticipants.add(name);
+        console.log(personinfo);
+        // let first_name = name.first_name;
+        // let [first_name] = name;
+        // console.log([first_name]);
+        oldParticipants.add(personinfo);
         return oldParticipants;
       });
-      setName("");
+      setPersonInfo({});
     }
   };
 
   const deleteParticipant = (event) => {
+    const id = Number(event.currentTarget.id);
+    let deletedParticipant;
+    for (const participant of participants) {
+      console.log(participant.id);
+      if (participant.id === id) {
+        deletedParticipant = participant;
+        break;
+      }
+    }
+
     setParticipants((oldParticipants) => {
       oldParticipants = new Set([...oldParticipants]);
-      oldParticipants.delete(event.currentTarget.id);
+      oldParticipants.delete(deletedParticipant);
+      console.log(oldParticipants);
       return oldParticipants;
     });
+  };
+
+  const handleBillName = (event) => {
+    const billName = event.target.value;
+    if (billName === "") setNameError(true);
+    else setNameError(false);
+    setBillName(billName);
+  };
+
+  const goToItemsPage = () => {
+    if (billName === "" || participants.size === 0) {
+      setOpenSnackbar(true);
+      return;
+    }
+    setStep(step + 1);
   };
 
   return (
@@ -55,7 +111,7 @@ function BillInfo() {
       padding={2}
       color={green[600]}
     >
-      <Card sx={{ minWidth: 650 }}>
+      <Card sx={{ minWidth: 650 }} elevation={5}>
         <CardContent>
           <Grid
             container
@@ -74,7 +130,11 @@ function BillInfo() {
                 variant="filled"
                 required
                 color="success"
-                onChange={(e) => setBillName(e.target.value)}
+                error={nameError}
+                helperText={
+                  nameError ? "Please give a valid name for the bill" : ""
+                }
+                onChange={handleBillName}
                 defaultValue={billName}
               />
             </Grid>
@@ -97,7 +157,13 @@ function BillInfo() {
               </Typography>
             </Grid>
             <Grid item>
-              <TextField
+              <AutofillFriends
+                friends={friends}
+                setPersonInfo={setPersonInfo}
+                addParticipant={addParticipant}
+              />
+
+              {/* <TextField
                 label="Participant Name"
                 variant="filled"
                 required
@@ -117,7 +183,7 @@ function BillInfo() {
                   }
                 }}
                 value={name}
-              />
+              /> */}
             </Grid>
             <Grid item marginTop={2}>
               <Button
@@ -140,8 +206,10 @@ function BillInfo() {
                 {[...participants].map((participant, pid) => (
                   <Grid item key={pid}>
                     <AccountCircleRoundedIcon />
-                    <Typography variant="h7">{participant}</Typography>
-                    <IconButton onClick={deleteParticipant} id={participant}>
+                    <Typography variant="h7">
+                      {participant.first_name}
+                    </Typography>
+                    <IconButton onClick={deleteParticipant} id={participant.id}>
                       <CancelRoundedIcon
                         fontSize="small"
                         // sx={{ marginBottom: 5 }}
@@ -158,11 +226,16 @@ function BillInfo() {
             variant="contained"
             color="primary"
             sx={{ height: 40 }}
-            onClick={() => setStep(step + 1)}
+            onClick={goToItemsPage}
           >
             Next
           </Button>
         </Box>
+        <ErrorSnackBar
+          open={openSnackbar}
+          message={errorMessage}
+          handleClose={() => setOpenSnackbar(false)}
+        />
       </Card>
     </Grid>
   );
