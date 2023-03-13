@@ -137,7 +137,6 @@ def findCommonGroups():
 
 @app.route("/add_expense", methods=["POST"])
 def addExpense():
-    print("hello")
     expense = request.json
     body = {
         "cost": expense["cost"],
@@ -162,7 +161,6 @@ def addExpense():
     },
         data=body)
 
-    print(response.text)
 
     if response.status_code == 200:
         return "Success", 200
