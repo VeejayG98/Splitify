@@ -7,12 +7,14 @@ import {
   InputAdornment,
   Button,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BillContext } from "../context/BillContext";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 
-const ItemBox = ({ id }) => {
+const ItemBox = ({ id, deleteItem }) => {
   const { participants, items, setItems } = useContext(BillContext);
   const [nameError, setNameError] = useState(false);
   const [priceError, setPriceError] = useState(false);
@@ -188,14 +190,16 @@ const ItemBox = ({ id }) => {
   };
 
   return (
-    <Paper
+    <Paper key={id}
       sx={{
         minWidth: 450,
         alignContent: "center",
         justifyContent: "center",
+        position: "relative"
       }}
     >
       <Grid
+        display="flex"
         container
         direction="column"
         alignContent="center"
@@ -210,6 +214,7 @@ const ItemBox = ({ id }) => {
           marginTop={2}
         >
           <TextField
+            key={id}
             label="Item name"
             variant="filled"
             required
@@ -219,7 +224,7 @@ const ItemBox = ({ id }) => {
             onChange={handleItemNameChange}
             onFocus={handleItemNameChange}
             id={`${id}`}
-            defaultValue={items[id][0]}
+            value={items[id][0]}
           />
         </Grid>
         <Grid
@@ -248,7 +253,7 @@ const ItemBox = ({ id }) => {
             }}
             onFocus={handleItemBillChange}
             id={`${id}`}
-            defaultValue={items[id][1]}
+            value={items[id][1]}
           />
         </Grid>
         <Grid item>
@@ -292,6 +297,16 @@ const ItemBox = ({ id }) => {
         >
           Unselect all
         </Button>
+      </Box>
+      <Box
+        display="flex"
+        position="absolute"
+        top={4}
+        right={4}
+      >
+        <IconButton id={id} onClick={deleteItem}>
+          <DeleteRoundedIcon />
+        </IconButton>
       </Box>
 
       {Object.keys(items[id][2]).map((key) => {

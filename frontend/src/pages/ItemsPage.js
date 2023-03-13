@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ErrorSnackBar from "../components/ErrorSnackBar";
 import ItemBox from "../components/ItemBox";
 import { BillContext } from "../context/BillContext";
@@ -21,7 +21,7 @@ function ItemsPage() {
     setTotals,
   } = useContext(BillContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const errorMessage = "Please fill in the details of the last item";
+  const [errorMessage, setErrorMessage] = useState("");
 
   const closeSnackBar = (event, reason) => {
     setOpenSnackbar(false);
@@ -35,12 +35,24 @@ function ItemsPage() {
       lastItem[1] === 0 ||
       Object.keys(lastItem[2]).length === 0
     ) {
+      setErrorMessage("Please fill in the details of the last item");
       setOpenSnackbar(true);
       return;
     }
 
     setNumItems(numItems + 1);
     setItems([...items, ["", 0, {}]]);
+  };
+
+  const deleteItem = (event) => {
+    if (items.length === 1) {
+      setErrorMessage("There has to be a minimum of one item in the bill");
+      setOpenSnackbar(true);
+      return;
+    }
+    const id = Number(event.currentTarget.id);
+    setNumItems(numItems - 1);
+    setItems(items.filter((_, i) => i !== id));
   };
 
   const generateBill = () => {
@@ -50,6 +62,7 @@ function ItemsPage() {
       lastItem[1] === 0 ||
       Object.keys(lastItem[2]).length === 0
     ) {
+      setErrorMessage("Please fill in the details of the last item");
       setOpenSnackbar(true);
       return;
     }
@@ -117,7 +130,7 @@ function ItemsPage() {
             {Array.from({ length: numItems }, (_, id) => {
               return (
                 <Grid item key={id}>
-                  <ItemBox id={id} />
+                  <ItemBox id={id} key={id} deleteItem={deleteItem} />
                 </Grid>
               );
             })}
