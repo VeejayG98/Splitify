@@ -4,16 +4,22 @@ import OpeningPage from "./pages/OpeningPage";
 import { createTheme } from "@mui/material";
 import { green, grey } from "@mui/material/colors";
 import { ThemeProvider } from "@mui/material";
+import SuccessPage from "./pages/SuccessPage";
 
 function App() {
   const theme = createTheme({
     palette: {
+      // mode: "dark",
       primary: {
-        main: green[600],
+        main: "#00b55c",
+        contrastText: "#fff"
+      },
+      secondary: {
+        main: green[600]
       },
       neutral: {
-        main: "#FFFFFF"
-      }
+        main: "#FFFFFF",
+      },
     },
   });
 
@@ -22,6 +28,7 @@ function App() {
       <Routes>
         <Route path="/" element={<OpeningPage />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/success" element={<SuccessPage />} />
       </Routes>
     </ThemeProvider>
   );

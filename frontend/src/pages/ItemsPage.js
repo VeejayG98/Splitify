@@ -86,7 +86,7 @@ function ItemsPage() {
       padding={2}
       color={green[600]}
     >
-      <Card sx={{ minWidth: 650, maxWidth: 650 }}>
+      <Card sx={{ minWidth: 650, maxWidth: 650 }} elevation={5}>
         <CardContent>
           <Grid
             container

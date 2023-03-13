@@ -1,4 +1,4 @@
-import { Fab } from "@mui/material";
+import { Box, Fab } from "@mui/material";
 import NavBar from "../components/Navbar";
 import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ function Home() {
   }, []);
 
   return (
-    <div>
+    <Box sx={{ height: "100vh" }}>
       <NavBar />
 
       <Fab
@@ -58,7 +58,7 @@ function Home() {
       >
         <PageSwitcher />
       </BillContext.Provider>
-    </div>
+    </Box>
   );
 }
 export default Home;
