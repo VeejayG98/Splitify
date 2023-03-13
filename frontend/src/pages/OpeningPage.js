@@ -52,50 +52,65 @@ function OpeningPage() {
 
   const oAuth2CodeLink = `https://secure.splitwise.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&state=SPLITIFY_APP`;
   return (
-    <div>
-      <Grid
-        container
-        sx={{ margin: 10 }}
-        direction="column"
-        display="flex"
-        justifyContent="center"
-        alignContent="center"
-      >
-        <Grid item marginLeft={10}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-            }}
-          >
-            <AccountBalanceWalletRoundedIcon sx={{ fontSize: 100 }} />
-            <Typography sx={{ fontWeight: 550, fontSize: 70 }}>
-              Splitify
-            </Typography>
-          </div>
-        </Grid>
-
-        <Grid item>
-          <p style={{ fontSize: 30, fontWeight: "bold" }}>
-            Manage breaking down your bills efficiently.
-          </p>
-          <p style={{ fontSize: 20, marginTop: 50 }}>
-            Easily calculate the splits of huge bills. Connect your Splitwise
-            account and seamlessly add your friends into the bills, and send it
-            straight to Splitwise.
-          </p>
+    <div
+      style={{
+        backgroundColor: "#00b55c",
+        color: "white",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <Typography
+          sx={{ fontWeight: 700, fontSize: 36, paddingLeft: 17, paddingTop: 6 }}
+        >
+          Splitify
+        </Typography>
+        <Typography
+          sx={{
+            fontWeight: 700,
+            fontSize: 43,
+            paddingLeft: 17,
+            paddingTop: 28,
+            width: 707,
+            lineHeight: "50px",
+          }}
+        >
+          Manage breaking down your bills efficiently.
+        </Typography>
+        <Typography
+          sx={{
+            fontWeight: 700,
+            fontSize: 18,
+            paddingLeft: 17,
+            paddingTop: 5,
+            width: 518,
+            lineHeight: "22px",
+          }}
+        >
+          Easily calculate the splits of huge bills. Connect your Splitwise
+          account and seamlessly add your friends into the bills, and send it
+          straight to Splitwise.
+        </Typography>
+        <div style={{ paddingLeft: 136, paddingTop: 33 }}>
           <a href={oAuth2CodeLink} style={{ textDecoration: "None" }}>
             <Button
               variant="contained"
-              color="primary"
-              sx={{ fontWeight: "bold" }}
+              color="neutral"
+              sx={{ fontWeight: "bold", color: "black" }}
             >
               Login with Splitwise
             </Button>
           </a>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
+      <div>
+        <img
+          src="Avatar.png"
+          style={{ width: 500, marginTop: 220, marginRight: 100 }}
+        />
+      </div>
     </div>
   );
 }

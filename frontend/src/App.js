@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import OpeningPage from "./pages/OpeningPage";
 import { createTheme } from "@mui/material";
-import { green } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
 import { ThemeProvider } from "@mui/material";
 
 function App() {
@@ -11,6 +11,9 @@ function App() {
       primary: {
         main: green[600],
       },
+      neutral: {
+        main: "#FFFFFF"
+      }
     },
   });
 
