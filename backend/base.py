@@ -1,6 +1,7 @@
 from flask import Flask, url_for, redirect, request, jsonify
 from flask_cors import CORS
 import requests
+import os
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
@@ -151,5 +152,5 @@ def addExpense():
 
     return "Failure", 400
 
-
-app.run()
+port = int(os.environ.get('PORT', 5000))
+app.run(host='0.0.0.0', port=port)
