@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SplitupTable from "../components/SplitupTable";
 import SplitwiseForm from "../components/SplitwiseForm";
 import { BillContext } from "../context/BillContext";
@@ -22,6 +23,8 @@ function GenerateBillPage() {
   const [commonGroups, setCommonGroups] = useState([]);
   const [splitwiseGroup, setSplitwiseGroup] = useState(null);
   const [paidBy, setPaidBy] = useState(null);
+  const navigate = useNavigate();
+
   let cost = 0;
   for (let i = 0; i < items.length; i++) {
     cost = cost + items[i][1];
@@ -49,12 +52,12 @@ function GenerateBillPage() {
       .then((data) => setCommonGroups(data.common_groups));
   };
 
-  const addExpense = () => {
+  const addExpense = async () => {
     const participantIDs = [];
     for (const participant of participants) {
       participantIDs.push(participant.id);
     }
-    fetch("http://127.0.0.1:5000/add_expense", {
+    await fetch("http://127.0.0.1:5000/add_expense", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -70,6 +73,7 @@ function GenerateBillPage() {
         splits: totals,
       }),
     });
+    navigate("/success?groupId=" + splitwiseGroup);
   };
 
   return (
