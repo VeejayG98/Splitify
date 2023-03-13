@@ -47,6 +47,7 @@ function OpeningPage() {
         .then((res) => res.json())
         // .then((data) => console.log(data));
         .then((data) => {
+          console.log(data);
           localStorage.setItem("accessToken", data["access_token"]);
           const time = new Date().getTime();
           localStorage.setItem("accessTokenTime", time);
