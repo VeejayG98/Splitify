@@ -19,6 +19,7 @@ import { BillContext } from "./context/BillContext";
 import { Box } from "@mui/system";
 import AutofillFriends from "./components/AutofillFriends";
 import ErrorSnackBar from "./components/ErrorSnackBar";
+import backendAPI from "./utils/network";
 
 function BillInfo() {
   const [friends, setFriends] = useState([]);
@@ -40,7 +41,8 @@ function BillInfo() {
 
   useEffect(() => {
     fetch(
-      "http://127.0.0.1:5000/getParticipants?token=" +
+      backendAPI +
+        "/getParticipants?token=" +
         localStorage.getItem("accessToken") +
         "&search=" +
         personinfo,

@@ -2,6 +2,7 @@ import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceW
 import { Button, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import backendAPI from "../utils/network";
 
 function OpeningPage() {
   const [accessToken, setAccessToken] = useState("");
@@ -23,18 +24,12 @@ function OpeningPage() {
     }
 
     if (code && state) {
-      fetch(
-        "http://127.0.0.1:5000/get_access_token?code=" +
-          code +
-          "&state=" +
-          state,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
+      fetch(backendAPI + "/get_access_token?code=" + code + "&state=" + state, {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      })
         .then((res) => res.json())
         // .then((data) => console.log(data));
         .then((data) => {

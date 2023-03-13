@@ -5,6 +5,7 @@ import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Box } from "@mui/system";
+import backendAPI from "../utils/network";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -17,7 +18,8 @@ const NavBar = () => {
   const [avatar, setAvatar] = useState("");
   useEffect(() => {
     fetch(
-      "http://127.0.0.1:5000/getUserAvatar?token=" +
+      backendAPI +
+        "/getUserAvatar?token=" +
         localStorage.getItem("accessToken"),
       {
         headers: {
@@ -32,7 +34,7 @@ const NavBar = () => {
 
   return (
     <AppBar position="static" color="primary">
-      <Toolbar >
+      <Toolbar>
         <Box display="flex" justifyContent="space-between" width="100%">
           <IconButton
             size="large"
@@ -48,7 +50,7 @@ const NavBar = () => {
           </IconButton>
 
           <Box display="flex" flexDirection="row" alignItems="center" sx={{}}>
-            <Avatar src={avatar} sx={{marginRight: 1}}/>
+            <Avatar src={avatar} sx={{ marginRight: 1 }} />
             <IconButton
               size="large"
               color="inherit"

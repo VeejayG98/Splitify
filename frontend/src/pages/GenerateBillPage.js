@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import SplitupTable from "../components/SplitupTable";
 import SplitwiseForm from "../components/SplitwiseForm";
 import { BillContext } from "../context/BillContext";
+import backendAPI from "../utils/network";
 
 function GenerateBillPage() {
   const { billName, step, setStep, participants, items, totals } =
@@ -37,7 +38,8 @@ function GenerateBillPage() {
     }
 
     fetch(
-      "http://127.0.0.1:5000/find_common_groups?token=" +
+      backendAPI +
+        "/find_common_groups?token=" +
         localStorage.getItem("accessToken") +
         "&participants=" +
         participantIDs.join(","),
@@ -57,7 +59,7 @@ function GenerateBillPage() {
     for (const participant of participants) {
       participantIDs.push(participant.id);
     }
-    await fetch("http://127.0.0.1:5000/add_expense", {
+    await fetch(backendAPI + "/add_expense", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
