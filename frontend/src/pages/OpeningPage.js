@@ -10,13 +10,17 @@ function OpeningPage() {
   const [clientID, setClientID] = useState("");
 
   useEffect(() => {
+    console.log(clientID)
+  }, [clientID])
+
+  useEffect(() => {
     fetch(backendAPI + "/get_client_id", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     })
-      .then((res) => res.json)
+      .then((res) => res.json())
       .then((data) => setClientID(data.client_id));
 
     const queryString = window.location.search;
