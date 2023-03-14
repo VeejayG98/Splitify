@@ -2,6 +2,13 @@ from flask import Flask, url_for, redirect, request, jsonify
 from flask_cors import CORS
 import requests
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SPLITWISE_CLIENT_ID = os.getenv("SPLITWISE_CLIENT_ID")
+SPLITWISE_CLIENT_SECRET = os.getenv("SPLITWISE_CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
@@ -9,8 +16,8 @@ app.config["DEBUG"] = False
 CORS(app)
 
 app.config['SECRET_KEY'] = "SECRET KEY!"
-app.config['SPLITWISE_CLIENT_ID'] = "WODPllgL2d66VFJqGQZRJnBQZq657Qh4reBm1IjM"
-app.config['SPLITWISE_CLIENT_SECRET'] = "P8BRx1Xei0RnJz69Rz8CZt4N0DS7NMMEl72Rw2Om"
+app.config['SPLITWISE_CLIENT_ID'] = SPLITWISE_CLIENT_ID
+app.config['SPLITWISE_CLIENT_SECRET'] = SPLITWISE_CLIENT_SECRET
 
 SPLITWISE_BASE_URL = "https://secure.splitwise.com/"
 SPLITWISE_API_VERSION = "api/v3.0"
@@ -37,7 +44,7 @@ def getAccessToken():
         "client_secret": app.config["SPLITWISE_CLIENT_SECRET"],
         "code": code,
         "grant_type": "authorization_code",
-        "redirect_uri": "https://splitify-xi.vercel.app/"
+        "redirect_uri": REDIRECT_URI
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded",
                "Accept": "application/json"}
@@ -142,7 +149,6 @@ def addExpense():
         body[user_key +
              "owed_share"] = str(expense["splits"][str(participant)])
 
-    # print(body)
 
     response = requests.post("https://secure.splitwise.com/api/v3.0/create_expense", headers={
         "Authorization": f"Bearer {expense['token']}"
@@ -156,5 +162,5 @@ def addExpense():
     return "Failure", 400
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 8080))
+    port = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=port)
