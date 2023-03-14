@@ -9,8 +9,6 @@ load_dotenv()
 SPLITWISE_CLIENT_ID = os.getenv("SPLITWISE_CLIENT_ID")
 SPLITWISE_CLIENT_SECRET = os.getenv("SPLITWISE_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
-print(SPLITWISE_CLIENT_ID, SPLITWISE_CLIENT_ID)
-print("Hello")
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
@@ -151,7 +149,6 @@ def addExpense():
         body[user_key +
              "owed_share"] = str(expense["splits"][str(participant)])
 
-    # print(body)
 
     response = requests.post("https://secure.splitwise.com/api/v3.0/create_expense", headers={
         "Authorization": f"Bearer {expense['token']}"
