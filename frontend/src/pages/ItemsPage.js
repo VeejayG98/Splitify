@@ -88,7 +88,7 @@ function ItemsPage() {
       (totalPrice, price) => totalPrice + price,
       0
     );
-    setTotals({ ...tempTotals, totalPrice: totals });
+    setTotals({ ...tempTotals, totalPrice: Number(totals.toFixed(2)) });
   };
 
   return (
