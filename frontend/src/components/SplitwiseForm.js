@@ -32,7 +32,7 @@ export default function SplitwiseForm({
 
         <Box display="flex" width="100%">
           <FormControl sx={{minWidth: 200}}>
-            <InputLabel>Splitwise Group</InputLabel>
+            <InputLabel>Select Splitwise Group</InputLabel>
             <Select
               label="Select Splitwise Group"
               onChange={(event) =>
