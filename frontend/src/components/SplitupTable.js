@@ -36,8 +36,8 @@ const SplitupTable = () => {
               </TableCell>
               <TableCell>{item[1]}</TableCell>
               {[...participants].map((participant, pid) =>
-                item[2].hasOwnProperty(participant.first_name) ? (
-                  <TableCell key={pid}>{item[2][participant.first_name]}</TableCell>
+                item[2].hasOwnProperty(participant.id) ? (
+                  <TableCell key={pid}>{item[2][participant.id]}</TableCell>
                 ) : (
                   <TableCell key={pid}>0</TableCell>
                 )

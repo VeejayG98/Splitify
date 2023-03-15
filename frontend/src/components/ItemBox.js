@@ -89,7 +89,7 @@ const ItemBox = ({ id, deleteItem }) => {
     newCost = Number(newCost.toFixed(2));
     const splitDiff = getSplitDiff(newCost, participants.size, items[id][1]);
     let newSplit = Object.fromEntries(
-      [...participants].map((key) => [key.first_name, newCost])
+      [...participants].map((key) => [key.id, newCost])
     );
     const randomParticipants = getRandomParticipants(
       Object.keys(newSplit),
@@ -264,10 +264,10 @@ const ItemBox = ({ id, deleteItem }) => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id={participant.first_name}
+                      id={`${participant.id}`}
                       onChange={handleCheckBox}
                       checked={items[id][2].hasOwnProperty(
-                        participant.first_name
+                        participant.id
                       )}
                     />
                   }

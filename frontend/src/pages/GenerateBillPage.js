@@ -60,7 +60,7 @@ function GenerateBillPage() {
     for (const participant of participants) {
       participantIDs.push(participant.id);
     }
-    await fetch(backendAPI + "/add_expense", {
+    const response = await fetch(backendAPI + "/add_expense", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,12 +77,33 @@ function GenerateBillPage() {
         splits: totals,
       }),
     });
+    const expense_info = await response.json();
+
+    const participantNames = [];
+    for (const participant of participants) {
+      participantNames.push(participant.first_name + participant.last_name);
+    }
+
+    console.log(items);
+    await fetch(backendAPI + "/add_comments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem("accessToken"),
+        expenseID: expense_info["id"],
+        participants: [...participants],
+        items: items,
+      }),
+    });
     navigate("/success?groupId=" + splitwiseGroup);
   };
 
   useEffect(() => {
     console.log(expenseDate);
-  }, [expenseDate])
+  }, [expenseDate]);
 
   return (
     <>
