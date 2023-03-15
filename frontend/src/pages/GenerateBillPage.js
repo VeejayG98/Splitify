@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SplitupTable from "../components/SplitupTable";
 import SplitwiseForm from "../components/SplitwiseForm";
@@ -24,6 +24,7 @@ function GenerateBillPage() {
   const [commonGroups, setCommonGroups] = useState([]);
   const [splitwiseGroup, setSplitwiseGroup] = useState(null);
   const [paidBy, setPaidBy] = useState(null);
+  const [expenseDate, setExpenseDate] = useState(null);
   const navigate = useNavigate();
 
   let cost = 0;
@@ -69,6 +70,7 @@ function GenerateBillPage() {
         token: localStorage.getItem("accessToken"),
         description: billName,
         cost: cost,
+        date: expenseDate,
         participants: participantIDs,
         splitwise_group: splitwiseGroup,
         paid_by: paidBy,
@@ -77,6 +79,10 @@ function GenerateBillPage() {
     });
     navigate("/success?groupId=" + splitwiseGroup);
   };
+
+  useEffect(() => {
+    console.log(expenseDate);
+  }, [expenseDate])
 
   return (
     <>
@@ -115,6 +121,7 @@ function GenerateBillPage() {
                 setSplitwiseGroup={setSplitwiseGroup}
                 participants={participants}
                 setPaidBy={setPaidBy}
+                setExpenseDate={setExpenseDate}
               />
               <Button
                 variant="contained"

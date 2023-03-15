@@ -310,13 +310,13 @@ const ItemBox = ({ id, deleteItem }) => {
         </IconButton>
       </Box>
 
-      {Object.keys(items[id][2]).map((key) => {
+      {/* {Object.keys(items[id][2]).map((key) => {
         return (
           <Typography variant="h6" key={key}>
             {key}: {items[id][2][key]}
           </Typography>
         );
-      })}
+      })} */}
     </Paper>
   );
 };

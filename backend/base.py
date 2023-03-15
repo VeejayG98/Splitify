@@ -136,7 +136,8 @@ def addExpense():
     body = {
         "cost": expense["cost"],
         "description": expense["description"],
-        "group_id": expense["splitwise_group"]
+        "group_id": expense["splitwise_group"],
+        "date": expense["date"] + "T11:00:00Z"
     }
 
     for i, participant in enumerate(expense["participants"]):
