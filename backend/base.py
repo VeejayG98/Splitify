@@ -155,12 +155,43 @@ def addExpense():
         "Authorization": f"Bearer {expense['token']}"
     },
         data=body)
-
+    expense_info = response.json()["expenses"][0]
 
     if response.status_code == 200:
-        return "Success", 200
+        return jsonify({"id": expense_info["id"]}), 200
 
     return "Failure", 400
+
+@app.route("/add_comments", methods=["POST"])
+def addComments():
+    expense = request.json
+    header = [participant["first_name"] + " " + participant["last_name"] if participant["last_name"] is not None else participant["first_name"] for participant in expense["participants"]]
+    header = ["Item"] + header + ["Item Cost"]
+    comments = []
+    comments.append(",".join(header))
+    for item in expense["items"]:
+        row = []
+        row.append(item[0])
+        for participant in expense["participants"]:
+            key = str(participant["id"])
+            if key not in item[2]:
+                row.append("0")
+            else:
+                row.append(str(item[2][key]))
+        row.append(str(item[1]))
+        comments.append(",".join(row))
+    print(comments)
+    response = requests.post("https://secure.splitwise.com/api/v3.0/create_comment", headers={
+        "Authorization": f"Bearer {expense['token']}"
+    }, data={
+        "expense_id": expense["expenseID"],
+        "content": "\n".join(comments)
+    })
+    if response.status_code == 200:
+        return "Success", 200
+    return "Failure", 400
+
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 3001))
