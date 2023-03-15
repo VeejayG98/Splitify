@@ -77,8 +77,8 @@ function ItemsPage() {
     console.log(items);
     for (let x in items) {
       for (const participant of participants) {
-        if (items[x][2].hasOwnProperty(participant.first_name))
-          tempTotals[participant.id] += items[x][2][participant.first_name];
+        if (items[x][2].hasOwnProperty(participant.id))
+          tempTotals[participant.id] += items[x][2][participant.id];
         tempTotals[participant.id] = Number(
           tempTotals[participant.id].toFixed(2)
         );
