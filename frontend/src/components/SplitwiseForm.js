@@ -34,7 +34,7 @@ export default function SplitwiseForm({
           <FormControl sx={{minWidth: 200}}>
             <InputLabel>Splitwise Group</InputLabel>
             <Select
-              label="Splitwise Group"
+              label="Select Splitwise Group"
               onChange={(event) =>
                 setSplitwiseGroup(Number(event.target.value))
               }
@@ -69,50 +69,12 @@ export default function SplitwiseForm({
 
         <Box display="flex" minWidth={200}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker label="Date of expense" onChange={(date) => setExpenseDate(dayjs(date).format('YYYY-DD-MM'))}/>
+          <DatePicker label="Date of expense" onChange={(date) => setExpenseDate(dayjs(date).format('YYYY-MM-DD'))}/>
         </LocalizationProvider>
       </Box>
 
-        {/* <FormControl>
-          <FormLabel>Splitwise Group</FormLabel>
-          <RadioGroup
-            onChange={(event) => setSplitwiseGroup(Number(event.target.value))}
-          >
-            {commonGroups.map((group) => (
-              <FormControlLabel
-                value={group.id}
-                control={<Radio />}
-                label={group.name}
-                id={group.id}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Paid by</FormLabel>
-          <RadioGroup
-            onChange={(event) => setPaidBy(Number(event.target.value))}
-          >
-            {[...participants].map((participant) => (
-              <FormControlLabel
-                value={participant.id}
-                control={<Radio />}
-                label={participant.first_name}
-                id={participant.id}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl> */}
       </Box>
       <Box display="flex" justifyContent="flex-end" marginBottom={10}>
-        {/* <Button
-          variant="contained"
-          color="primary"
-          sx={{ margin: 2 }}
-          onClick={addExpense}
-        >
-          Push to Splitwise
-        </Button> */}
       </Box>
     </Box>
   );
