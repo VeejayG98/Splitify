@@ -13,6 +13,7 @@ import {
 import { Box } from "@mui/system";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ErrorSnackBar from "../components/ErrorSnackBar";
 import SplitupTable from "../components/SplitupTable";
 import SplitwiseForm from "../components/SplitwiseForm";
 import { BillContext } from "../context/BillContext";
@@ -25,6 +26,10 @@ function GenerateBillPage() {
   const [splitwiseGroup, setSplitwiseGroup] = useState(null);
   const [paidBy, setPaidBy] = useState(null);
   const [expenseDate, setExpenseDate] = useState(null);
+  const [groupError, setGroupError] = useState(false);
+  const [paidError, setPaidError] = useState(false);
+  const [dateError, setDateError] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
   let cost = 0;
@@ -56,6 +61,14 @@ function GenerateBillPage() {
   };
 
   const addExpense = async () => {
+    if (splitwiseGroup === null || paidBy === null || expenseDate === null) {
+      setOpenSnackbar(true);
+      setGroupError(true);
+      setPaidError(true);
+      setDateError(true);
+      return;
+    }
+
     const participantIDs = [];
     for (const participant of participants) {
       participantIDs.push(participant.id);
@@ -102,8 +115,8 @@ function GenerateBillPage() {
   };
 
   useEffect(() => {
-    console.log(expenseDate);
-  }, [expenseDate]);
+    console.log(splitwiseGroup);
+  }, [splitwiseGroup]);
 
   return (
     <>
@@ -139,10 +152,19 @@ function GenerateBillPage() {
             <Box display="flex" flexDirection="column" margin={2}>
               <SplitwiseForm
                 commonGroups={commonGroups}
+                splitwiseGroup={splitwiseGroup}
                 setSplitwiseGroup={setSplitwiseGroup}
                 participants={participants}
+                paidBy={paidBy}
                 setPaidBy={setPaidBy}
+                expenseDate={expenseDate}
                 setExpenseDate={setExpenseDate}
+                groupError={groupError}
+                paidError={paidError}
+                dateError={dateError}
+                setGroupError={setGroupError}
+                setPaidError={setPaidError}
+                setDateError={setDateError}
               />
               <Button
                 variant="contained"
@@ -165,6 +187,11 @@ function GenerateBillPage() {
               </Button>
             </Box>
           )}
+          <ErrorSnackBar
+            open={openSnackbar}
+            message="Fill in the Splitwise form"
+            handleClose={() => setOpenSnackbar(false)}
+          />
         </Card>
       </Box>
       {/* <Box display="flex" justifyContent="flex-end" marginBottom={10}>
