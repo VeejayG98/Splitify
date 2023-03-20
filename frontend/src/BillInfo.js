@@ -206,7 +206,7 @@ function BillInfo() {
                 direction="column"
               >
                 {[...participants].map((participant, pid) => (
-                  <Grid item key={pid}>
+                  <Grid item key={pid} display="flex" alignItems="center">
                     <AccountCircleRoundedIcon />
                     <Typography variant="h7">
                       {participant.first_name}
