@@ -49,7 +49,6 @@ const ItemBox = ({ id, deleteItem }) => {
   const adjustSplit = (participants, newSplit, splitDiff) => {
     if (participants.length !== 0) {
       splitDiff = Number((splitDiff / participants.length).toFixed(2));
-      console.log(splitDiff);
       for (let i = 0; i < participants.length; i++) {
         newSplit[participants[i]] += splitDiff;
         newSplit[participants[i]] = Number(
@@ -68,7 +67,6 @@ const ItemBox = ({ id, deleteItem }) => {
         Object.keys(items[id][2]).length,
         items[id][1]
       );
-      console.log(splitDiff);
       let newSplit = Object.fromEntries(
         Object.keys(items[id][2]).map((key) => [key, newCost])
       );
@@ -183,13 +181,18 @@ const ItemBox = ({ id, deleteItem }) => {
 
   const handleItemBillChange = (event) => {
     let itemCost = Number(event.currentTarget.value);
-    if (itemCost === 0) setPriceError(true);
-    else setPriceError(false);
     setItems((items) => {
       const tempItems = [...items];
       tempItems[id][1] = itemCost;
       return tempItems;
     });
+  };
+
+  const handleBillFocus = (event) => {
+    event.target.select();
+    let itemCost = Number(event.currentTarget.value);
+    if (itemCost === 0) setPriceError(true);
+    else setPriceError(false);
   };
 
   return (
@@ -220,7 +223,7 @@ const ItemBox = ({ id, deleteItem }) => {
           <TextField
             key={id}
             label="Item name"
-            variant="filled"
+            variant="outlined"
             required
             color="primary"
             error={nameError}
@@ -240,7 +243,7 @@ const ItemBox = ({ id, deleteItem }) => {
         >
           <TextField
             label="Item price"
-            variant="filled"
+            variant="outlined"
             type="number"
             onWheel={(e) => e.target.blur()}
             required
@@ -256,7 +259,7 @@ const ItemBox = ({ id, deleteItem }) => {
               handleItemBillChange(event);
               updateSplit();
             }}
-            onFocus={handleItemBillChange}
+            onFocus={handleBillFocus}
             id={`${id}`}
             value={items[id][1]}
           />
