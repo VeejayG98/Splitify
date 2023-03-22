@@ -49,10 +49,11 @@ const ItemBox = ({ id, deleteItem }) => {
   const adjustSplit = (participants, newSplit, splitDiff) => {
     if (participants.length !== 0) {
       splitDiff = Number((splitDiff / participants.length).toFixed(2));
-      console.log(splitDiff);
       for (let i = 0; i < participants.length; i++) {
         newSplit[participants[i]] += splitDiff;
-        newSplit[participants[i]] = Number(newSplit[participants[i]].toFixed(2));
+        newSplit[participants[i]] = Number(
+          newSplit[participants[i]].toFixed(2)
+        );
       }
     }
   };
@@ -66,7 +67,6 @@ const ItemBox = ({ id, deleteItem }) => {
         Object.keys(items[id][2]).length,
         items[id][1]
       );
-      console.log(splitDiff);
       let newSplit = Object.fromEntries(
         Object.keys(items[id][2]).map((key) => [key, newCost])
       );
@@ -181,8 +181,6 @@ const ItemBox = ({ id, deleteItem }) => {
 
   const handleItemBillChange = (event) => {
     let itemCost = Number(event.currentTarget.value);
-    if (itemCost === 0) setPriceError(true);
-    else setPriceError(false);
     setItems((items) => {
       const tempItems = [...items];
       tempItems[id][1] = itemCost;
@@ -190,13 +188,21 @@ const ItemBox = ({ id, deleteItem }) => {
     });
   };
 
+  const handleBillFocus = (event) => {
+    event.target.select();
+    let itemCost = Number(event.currentTarget.value);
+    if (itemCost === 0) setPriceError(true);
+    else setPriceError(false);
+  };
+
   return (
-    <Paper key={id}
+    <Paper
+      key={id}
       sx={{
         minWidth: 450,
         alignContent: "center",
         justifyContent: "center",
-        position: "relative"
+        position: "relative",
       }}
     >
       <Grid
@@ -217,7 +223,7 @@ const ItemBox = ({ id, deleteItem }) => {
           <TextField
             key={id}
             label="Item name"
-            variant="filled"
+            variant="outlined"
             required
             color="primary"
             error={nameError}
@@ -237,8 +243,9 @@ const ItemBox = ({ id, deleteItem }) => {
         >
           <TextField
             label="Item price"
-            variant="filled"
+            variant="outlined"
             type="number"
+            onWheel={(e) => e.target.blur()}
             required
             color="primary"
             error={priceError}
@@ -252,7 +259,7 @@ const ItemBox = ({ id, deleteItem }) => {
               handleItemBillChange(event);
               updateSplit();
             }}
-            onFocus={handleItemBillChange}
+            onFocus={handleBillFocus}
             id={`${id}`}
             value={items[id][1]}
           />
@@ -266,9 +273,7 @@ const ItemBox = ({ id, deleteItem }) => {
                     <Checkbox
                       id={`${participant.id}`}
                       onChange={handleCheckBox}
-                      checked={items[id][2].hasOwnProperty(
-                        participant.id
-                      )}
+                      checked={items[id][2].hasOwnProperty(participant.id)}
                     />
                   }
                   label={participant.first_name}
@@ -299,12 +304,7 @@ const ItemBox = ({ id, deleteItem }) => {
           Unselect all
         </Button>
       </Box>
-      <Box
-        display="flex"
-        position="absolute"
-        top={4}
-        right={4}
-      >
+      <Box display="flex" position="absolute" top={4} right={4}>
         <IconButton id={id} onClick={deleteItem}>
           <DeleteRoundedIcon />
         </IconButton>
