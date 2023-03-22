@@ -52,7 +52,9 @@ const ItemBox = ({ id, deleteItem }) => {
       console.log(splitDiff);
       for (let i = 0; i < participants.length; i++) {
         newSplit[participants[i]] += splitDiff;
-        newSplit[participants[i]] = Number(newSplit[participants[i]].toFixed(2));
+        newSplit[participants[i]] = Number(
+          newSplit[participants[i]].toFixed(2)
+        );
       }
     }
   };
@@ -191,12 +193,13 @@ const ItemBox = ({ id, deleteItem }) => {
   };
 
   return (
-    <Paper key={id}
+    <Paper
+      key={id}
       sx={{
         minWidth: 450,
         alignContent: "center",
         justifyContent: "center",
-        position: "relative"
+        position: "relative",
       }}
     >
       <Grid
@@ -239,6 +242,7 @@ const ItemBox = ({ id, deleteItem }) => {
             label="Item price"
             variant="filled"
             type="number"
+            onWheel={(e) => e.target.blur()}
             required
             color="primary"
             error={priceError}
@@ -266,9 +270,7 @@ const ItemBox = ({ id, deleteItem }) => {
                     <Checkbox
                       id={`${participant.id}`}
                       onChange={handleCheckBox}
-                      checked={items[id][2].hasOwnProperty(
-                        participant.id
-                      )}
+                      checked={items[id][2].hasOwnProperty(participant.id)}
                     />
                   }
                   label={participant.first_name}
@@ -299,12 +301,7 @@ const ItemBox = ({ id, deleteItem }) => {
           Unselect all
         </Button>
       </Box>
-      <Box
-        display="flex"
-        position="absolute"
-        top={4}
-        right={4}
-      >
+      <Box display="flex" position="absolute" top={4} right={4}>
         <IconButton id={id} onClick={deleteItem}>
           <DeleteRoundedIcon />
         </IconButton>
