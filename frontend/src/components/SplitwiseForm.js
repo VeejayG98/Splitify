@@ -36,7 +36,6 @@ export default function SplitwiseForm({
   setDateError,
 }) {
   const handleOpen = (state, setError) => {
-    console.log(state);
     if (state === null) {
       setError(true);
       return;

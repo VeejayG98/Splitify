@@ -1,4 +1,4 @@
-// const backendAPI = "https://splitify-backend.herokuapp.com";
-const backendAPI = "http://192.168.10.68:3001";
+const backendAPI = "https://splitify-backend.herokuapp.com";
+// const backendAPI = "http://127.0.0.1:3001";
 
 export default backendAPI;

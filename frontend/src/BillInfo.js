@@ -60,10 +60,6 @@ function BillInfo() {
   const addParticipant = () => {
     if (Object.keys(personinfo).length !== 0) {
       setParticipants((oldParticipants) => {
-        console.log(personinfo);
-        // let first_name = name.first_name;
-        // let [first_name] = name;
-        // console.log([first_name]);
         oldParticipants.add(personinfo);
         return oldParticipants;
       });
@@ -75,7 +71,6 @@ function BillInfo() {
     const id = Number(event.currentTarget.id);
     let deletedParticipant;
     for (const participant of participants) {
-      console.log(participant.id);
       if (participant.id === id) {
         deletedParticipant = participant;
         break;
@@ -85,7 +80,6 @@ function BillInfo() {
     setParticipants((oldParticipants) => {
       oldParticipants = new Set([...oldParticipants]);
       oldParticipants.delete(deletedParticipant);
-      console.log(oldParticipants);
       return oldParticipants;
     });
   };
@@ -129,7 +123,7 @@ function BillInfo() {
             <Grid item marginTop={2}>
               <TextField
                 label="Bill Name"
-                variant="filled"
+                variant="outlined"
                 required
                 color="success"
                 error={nameError}

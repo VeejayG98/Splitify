@@ -74,7 +74,6 @@ function ItemsPage() {
     let tempTotals = Object.fromEntries(
       [...participants].map((participant) => [participant.id, 0])
     );
-    console.log(items);
     for (let x in items) {
       for (const participant of participants) {
         if (items[x][2].hasOwnProperty(participant.id))

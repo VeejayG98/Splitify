@@ -10,10 +10,6 @@ function OpeningPage() {
   const [clientID, setClientID] = useState("");
 
   useEffect(() => {
-    console.log(clientID)
-  }, [clientID])
-
-  useEffect(() => {
     fetch(backendAPI + "/get_client_id", {
       headers: {
         "Content-Type": "application/json",
@@ -45,9 +41,7 @@ function OpeningPage() {
         },
       })
         .then((res) => res.json())
-        // .then((data) => console.log(data));
         .then((data) => {
-          console.log(data);
           localStorage.setItem("accessToken", data["access_token"]);
           const time = new Date().getTime();
           localStorage.setItem("accessTokenTime", time);
