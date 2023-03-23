@@ -181,6 +181,8 @@ const ItemBox = ({ id, deleteItem }) => {
 
   const handleItemBillChange = (event) => {
     let itemCost = Number(event.currentTarget.value);
+    if (itemCost === 0) setPriceError(true);
+    else setPriceError(false);
     setItems((items) => {
       const tempItems = [...items];
       tempItems[id][1] = itemCost;
