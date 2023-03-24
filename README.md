@@ -1,6 +1,8 @@
-<h1 align="center" style="font-size: 36px;"><strong><a href="https://splitify.herokuapp.com/">Splitify</a> - Expense Splitting Tool for Splitwise</strong></h1>
+<h1 align="center" style="font-size: 36px;"><strong><a href="https://splitify-bills.vercel.app/">Splitify</a> - Expense Splitting Tool for Splitwise</strong></h1>
 
-<p align="center" style="font-size: 24px;"><strong>Manage breaking down your bills efficiently.</strong></p>
+<h3 align="center" style="font-size: 24px;"><strong>Manage breaking down your bills efficiently.</strong></h3>
+
+![Opening Page](screenshots/Opening%20Page.png)
 
 ## **The Idea**
 
@@ -24,18 +26,3 @@ I designed Splitify to ensure a seamless experience for users. My goal was to cr
 - Bill generation will show a breakup of the entire bill and splits of every person involved in the bill.
 - Using Splitwise APIs, you can directly push your bill to Splitwise right from Splitify.
 - Breakup of the entire bill will be written to the comments of the bill.
-
-# Screenshots
-
-## Initial Home Screen
-
-![Initial Homescreen](/screenshots/Initial%20Homescreen.png)
-
-## Add Items
-
-![Add Items - 1](/screenshots/Add%20Items%20-%201.png)
-![Add Items - 2](/screenshots/Add%20Items%20-%202.png)
-
-## Generate Bill
-
-![Generate Bill](/screenshots/Generate%20Bill.png)
