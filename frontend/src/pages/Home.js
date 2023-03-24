@@ -28,16 +28,6 @@ function Home() {
     <Box sx={{ height: "100vh" }}>
       <NavBar />
 
-      <Fab
-        variant="extended"
-        aria-label="add bill"
-        color="primary"
-        sx={{ position: "fixed", bottom: "20px", right: "20px" }}
-        onClick={() => {}}
-      >
-        <ReceiptLongRoundedIcon sx={{ mr: 1 }} />
-        New Bill
-      </Fab>
       <BillContext.Provider
         value={{
           step,
