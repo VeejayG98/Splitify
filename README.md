@@ -15,7 +15,9 @@ A full-stack web application for managing expense splits among friends. This app
 
 ## Overview
 
-Splitify is an intuitive application that eliminates the need for manual calculations and complicated spreadsheets. To use the app, simply sign in to your Splitwise account (using OAuth2), and add the name of the bill and its participants. Using the Splitwise API, you can select participants directly from your Splitwise friends list. From there, you can easily add items and select the participants for each split. With the ability to push the bill directly to Splitwise from the app, you'll save even more time and energy.
+Splitify is an intuitive application that eliminates the need for manual calculations and complicated spreadsheets. It is built using ReactJS, JavaScript and Material-UI on the frontend and Python + Flask on the Backend.
+
+To use the app, simply sign in to your Splitwise account (using OAuth2), and add the name of the bill and its participants. Using the Splitwise API, you can select participants directly from your Splitwise friends list. From there, you can easily add items and select the participants for each split. With the ability to push the bill directly to Splitwise from the app, you'll save even more time and energy.
 
 I designed Splitify to ensure a seamless experience for users. My goal was to create an application that makes splitting large bills, like grocery bills, a stress-free and enjoyable experience.
 
