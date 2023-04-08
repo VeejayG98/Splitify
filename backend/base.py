@@ -1,4 +1,4 @@
-from typing import List, TypedDict
+from typing import Dict, List, TypedDict
 from flask import Flask, url_for, redirect, request, jsonify
 from flask_cors import CORS
 import requests
@@ -224,9 +224,20 @@ def findCommonGroups():
 
 @app.route("/add_expense", methods=["POST"])
 def addExpense():
-    expense = request.json
-    if expense is None:
+
+    class Expense(TypedDict):
+        token: str
+        cost: str
+        description: str
+        splitwise_group: int
+        date: str
+        paid_by: int
+        participants: List[int]
+        splits: Dict[str, str]
+
+    if request.json is None:
         return "No expense provided", 400
+    expense: Expense = request.json
     body = {
         "cost": expense["cost"],
         "description": expense["description"],
@@ -258,9 +269,23 @@ def addExpense():
 
 @app.route("/add_comments", methods=["POST"])
 def addComments():
-    expense = request.json
-    if expense is None:
+
+    class Participant(TypedDict):
+        id: int
+        first_name: str
+        last_name: str
+
+
+    class Expense(TypedDict):
+        token: str
+        expenseID: int
+        participants: List[Participant]
+        items: List[List]
+
+    if request.json is None:
         return "No expense provided", 400
+
+    expense: Expense = request.json
     header = [participant["first_name"] + " " + participant["last_name"] if participant["last_name"] is not None else participant["first_name"] for participant in expense["participants"]]
     header = ["Item"] + header + ["Item Cost"]
     comments = []
@@ -276,7 +301,7 @@ def addComments():
                 row.append(str(item[2][key]))
         row.append(str(item[1]))
         comments.append(",".join(row))
-    print(comments)
+        
     response = requests.post("https://secure.splitwise.com/api/v3.0/create_comment", headers={
         "Authorization": f"Bearer {expense['token']}"
     }, data={
