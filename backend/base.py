@@ -1,3 +1,4 @@
+from typing import List, TypedDict
 from flask import Flask, url_for, redirect, request, jsonify
 from flask_cors import CORS
 import requests
@@ -66,29 +67,46 @@ def getUserAvatar():
 
 @app.route("/getParticipants")
 def getParticipants():
+
+    class Picture(TypedDict):
+        small: str
+        medium: str
+        large: str
+    
+    class Person(TypedDict):
+        id: int
+        first_name: str
+        last_name: str
+        email: str
+        registration_status: str
+        picture: Picture
+        groups: List[str]
+        balance: List[float]
+        updated_at: str
+
+    class FriendsListResponse(TypedDict):
+        friends: List[Person]
+    
+    class UserInfoResponse(TypedDict):
+        user: Person
+
+    class BasicFriendInfo(TypedDict):
+        first_name: str
+        last_name: str
+        id: int
+        avatar: str
+
     token = request.args["token"]
     search = request.args["search"].lower()
     response = requests.get("https://secure.splitwise.com/api/v3.0/get_friends", headers={
         "Authorization": f"Bearer {token}"
     })
-    friends_list = response.json()
-    # print(friends_list)
+    friends_list_response: FriendsListResponse = response.json()
 
-    # if search:
-    #     new_friends_list = []
-    #     for friend in friends_list["friends"]:
-    #         if friend["first_name"].startswith(search) or friend["last_name"].startswith(search):
-    #             new_friends_list.append({"first_name": friend["first_name"],
-    #                                      "last_name": friend["last_name"],
-    #                                      "id": friend["id"],
-    #                                      "avatar": friend["picture"]["large"]})
-
-    #     friends_list = new_friends_list
-    # else:
-    friends_list = [{"first_name": friend["first_name"],
+    friends_list: List[BasicFriendInfo] = [{"first_name": friend["first_name"],
                     "last_name": friend["last_name"],
                      "id": friend["id"],
-                     "avatar": friend["picture"]["large"]} for friend in friends_list["friends"]]
+                     "avatar": friend["picture"]["large"]} for friend in friends_list_response["friends"]]
     response = requests.get("https://secure.splitwise.com/api/v3.0/get_current_user", headers={
         "Authorization": f"Bearer {token}"
     })
@@ -102,13 +120,87 @@ def getParticipants():
 
 @app.route("/find_common_groups")
 def findCommonGroups():
+
+
+    class Picture(TypedDict):
+        small: str
+        medium: str
+        large: str
+
+
+    class Balance(TypedDict):
+        currency_code: str
+        amount: str
+
+
+    class Member(TypedDict):
+        id: int
+        first_name: str
+        last_name: str
+        email: str
+        registration_status: str
+        picture: Picture
+        balance: List[Balance]
+
+
+    class Avatar(TypedDict):
+        original: None
+        xxlarge: str
+        xlarge: str
+        large: str
+        medium: str
+        small: str
+
+
+    class OriginalDebt(TypedDict):
+        from_: int
+        to: int
+        amount: str
+        currency_code: str
+
+
+    class SimplifiedDebt(TypedDict):
+        from_: int
+        to: int
+        amount: str
+        currency_code: str
+
+
+    class CoverPhoto(TypedDict):
+        xxlarge: str
+        xlarge: str
+
+
+    class Group(TypedDict):
+        id: int
+        name: str
+        group_type: str
+        updated_at: str
+        simplify_by_default: bool
+        members: List[Member]
+        original_debts: List[OriginalDebt]
+        simplified_debts: List[SimplifiedDebt]
+        avatar: Avatar
+        custom_avatar: bool
+        cover_photo: CoverPhoto
+        invite_link: str
+
+
+    class SplitwiseData(TypedDict):
+        groups: List[Group]
+
+
+    class CommonGroup(TypedDict):
+        id: int
+        name: str
+
     participants = request.args["participants"].split(",")
     participants = [int(participant) for participant in participants]
     token = request.args["token"]
     response = requests.get("https://secure.splitwise.com/api/v3.0/get_groups", headers={
         "Authorization": f"Bearer {token}"
     })
-    groups = response.json()
+    groups: SplitwiseData = response.json()
     groups_list = []
 
     for group in groups["groups"]:
@@ -117,7 +209,7 @@ def findCommonGroups():
         groups_list[-1]["members"] = set([member["id"]
                                           for member in members])
 
-    common_groups = []
+    common_groups: List[CommonGroup] = []
     for group in groups_list:
         isCommon = True
         for participant in participants:
@@ -133,6 +225,8 @@ def findCommonGroups():
 @app.route("/add_expense", methods=["POST"])
 def addExpense():
     expense = request.json
+    if expense is None:
+        return "No expense provided", 400
     body = {
         "cost": expense["cost"],
         "description": expense["description"],
@@ -165,6 +259,8 @@ def addExpense():
 @app.route("/add_comments", methods=["POST"])
 def addComments():
     expense = request.json
+    if expense is None:
+        return "No expense provided", 400
     header = [participant["first_name"] + " " + participant["last_name"] if participant["last_name"] is not None else participant["first_name"] for participant in expense["participants"]]
     header = ["Item"] + header + ["Item Cost"]
     comments = []
