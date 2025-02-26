@@ -23,7 +23,7 @@ function GenerateBillPage() {
   const { billName, step, setStep, participants, items, totals } =
     useContext(BillContext);
   const [commonGroups, setCommonGroups] = useState([]);
-  const [splitwiseGroup, setSplitwiseGroup] = useState(null);
+  const [splitwiseGroup, setSplitwiseGroup] = useState(0);
   const [paidBy, setPaidBy] = useState(null);
   const [expenseDate, setExpenseDate] = useState(null);
   const [groupError, setGroupError] = useState(false);

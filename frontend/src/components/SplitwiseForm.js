@@ -9,6 +9,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Switch,
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -16,7 +17,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { red } from "@mui/material/colors";
 
 export default function SplitwiseForm({
@@ -35,6 +36,8 @@ export default function SplitwiseForm({
   setPaidError,
   setDateError,
 }) {
+  const [saveToGroups, setSaveToGroups] = useState(false);
+
   const handleOpen = (state, setError) => {
     if (state === null) {
       setError(true);
@@ -42,32 +45,53 @@ export default function SplitwiseForm({
     }
   };
 
+  const handleGroupToggle = (event) => {
+    if (!event.target.checked) {
+      setSplitwiseGroup(0);
+    }
+    setSaveToGroups(event.target.checked);
+  };
+
   return (
     <Box display="flex" flexDirection="column">
+      <Box display="flex" marginBottom={2}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={saveToGroups}
+              onChange={handleGroupToggle}
+              color="primary"
+            />
+          }
+          label="Save to Splitwise Groups"
+        />
+      </Box>
       <Box display="flex" justifyContent="space-between">
-        <Box display="flex" width="100%">
-          <FormControl sx={{ minWidth: 200 }} error={groupError}>
-            <InputLabel>Select Splitwise Group</InputLabel>
-            <Select
-              label="Select Splitwise Group"
-              onChange={(event) => {
-                setSplitwiseGroup(Number(event.target.value));
-                setGroupError(false);
-              }}
-              onOpen={() => handleOpen(splitwiseGroup, setGroupError)}
-              value={splitwiseGroup ? splitwiseGroup : ""}
-            >
-              {commonGroups.map((group) => (
-                <MenuItem value={group.id} id={group.id} key={group.id}>
-                  {group.name}
-                </MenuItem>
-              ))}
-            </Select>
-            {groupError && (
-              <FormHelperText>Select a Splitwise Group</FormHelperText>
-            )}
-          </FormControl>
-        </Box>
+        {saveToGroups && (
+          <Box display="flex" width="100%">
+            <FormControl sx={{ minWidth: 200 }} error={groupError}>
+              <InputLabel>Select Splitwise Group</InputLabel>
+              <Select
+                label="Select Splitwise Group"
+                onChange={(event) => {
+                  setSplitwiseGroup(Number(event.target.value));
+                  setGroupError(false);
+                }}
+                onOpen={() => handleOpen(splitwiseGroup, setGroupError)}
+                value={splitwiseGroup ? splitwiseGroup : ""}
+              >
+                {commonGroups.map((group) => (
+                  <MenuItem value={group.id} id={group.id} key={group.id}>
+                    {group.name}
+                  </MenuItem>
+                ))}
+              </Select>
+              {groupError && (
+                <FormHelperText>Select a Splitwise Group</FormHelperText>
+              )}
+            </FormControl>
+          </Box>
+        )}
 
         <Box display="flex" width="100%">
           <FormControl sx={{ minWidth: 200 }} error={paidError}>
@@ -107,7 +131,7 @@ export default function SplitwiseForm({
                   setExpenseDate(dayjs(date).format("YYYY-MM-DD"));
                   setDateError(false);
                 }}
-                onOpen={() => handleOpen(expenseDate, setDateError)}                  
+                onOpen={() => handleOpen(expenseDate, setDateError)}
               />
               {dateError && (
                 <FormHelperText>Please fill in the date.</FormHelperText>
