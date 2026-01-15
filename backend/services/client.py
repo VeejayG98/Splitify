@@ -1,4 +1,8 @@
 from abc import ABC
+from typing import List, Dict, Any, Optional
+import httpx
+from backend.dtos.user import User
+from backend.dtos.group import Group
 
 class Client(ABC):
     """
@@ -11,19 +15,55 @@ class SplitwiseClient(Client):
     """
     Concrete implementation of Client for Splitwise.
     """
+    BASE_URL = "https://secure.splitwise.com/api/v3.0"
+
     def __init__(self, client_id: str, api_key: str):
         self._client_id = client_id
         self._api_key = api_key
 
     def get_client_id(self) -> str:
         """Retrieves the Client ID."""
-        # Note: We don't raise error here anymore because we validated inputs in init/dependency
-        # But to be safe and consistent with previous behavior or strictness:
-        # Actually in the previous iteration I did raise error if missing.
-        # But now __init__ takes strict str.
-        # Let's keep it simple.
         return self._client_id
 
     def get_access_token(self) -> str:
         """Retrieves the Access Token."""
         return self._api_key
+
+    async def get_current_user(self, token: str) -> User:
+        """
+        Fetches the current user's information.
+        """
+        url = f"{self.BASE_URL}/get_current_user"
+        headers = {"Authorization": f"Bearer {token}"}
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+            return User.model_validate(data["user"])
+
+    async def get_friends(self, token: str) -> List[User]:
+        """
+        Fetches the current user's friends.
+        """
+        url = f"{self.BASE_URL}/get_friends"
+        headers = {"Authorization": f"Bearer {token}"}
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+            return [User.model_validate(friend) for friend in data["friends"]]
+
+    async def get_groups(self, token: str) -> List[Group]:
+        """
+        Fetches the groups the user is part of.
+        """
+        url = f"{self.BASE_URL}/get_groups"
+        headers = {"Authorization": f"Bearer {token}"}
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+            data = response.json()
+            return [Group.model_validate(group) for group in data["groups"]]
