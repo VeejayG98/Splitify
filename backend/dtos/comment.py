@@ -1,13 +1,12 @@
 from __future__ import annotations
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+from pydantic import Field, field_validator
 
+from backend.dtos.base import ReadDto
 from backend.dtos.user import User
 
-class Comment(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-
+class Comment(ReadDto):
     id: int = Field(..., ge=0)
     content: str = Field(..., min_length=1)
     comment_type: Optional[str] = None

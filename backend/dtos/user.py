@@ -1,13 +1,12 @@
 from __future__ import annotations
 from typing import Optional, List, Dict, Any
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator, EmailStr, ConfigDict
+from pydantic import Field, field_validator, EmailStr
 
+from backend.dtos.base import ReadDto
 from backend.dtos.common import Picture, Balance, FriendGroup
 
-class User(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-
+class User(ReadDto):
     id: int = Field(..., ge=0)
     first_name: str = Field(..., min_length=1)
     last_name: Optional[str] = None

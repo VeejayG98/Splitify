@@ -2,19 +2,18 @@ from __future__ import annotations
 from typing import Optional, List
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, Field, field_validator, HttpUrl, ConfigDict
+from pydantic import Field, field_validator, HttpUrl
 
+from backend.dtos.base import ReadDto
 from backend.dtos.user import User
 
-class Debt(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-
+class Debt(ReadDto):
     from_user: int = Field(..., alias="from", ge=0)
     to_user: int = Field(..., alias="to", ge=0)
     amount: Decimal
     currency_code: str = Field(..., min_length=3, max_length=3)
 
-class Avatar(BaseModel):
+class Avatar(ReadDto):
     original: Optional[HttpUrl] = None
     xxlarge: Optional[HttpUrl] = None
     xlarge: Optional[HttpUrl] = None
@@ -22,13 +21,11 @@ class Avatar(BaseModel):
     medium: Optional[HttpUrl] = None
     small: Optional[HttpUrl] = None
 
-class CoverPhoto(BaseModel):
+class CoverPhoto(ReadDto):
     xxlarge: Optional[HttpUrl] = None
     xlarge: Optional[HttpUrl] = None
 
-class Group(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-
+class Group(ReadDto):
     id: int = Field(..., ge=0)
     name: str = Field(..., min_length=1)
     group_type: Optional[str] = None # e.g. "home", "trip"
