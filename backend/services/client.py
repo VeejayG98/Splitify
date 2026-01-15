@@ -77,19 +77,12 @@ class SplitwiseClient(Client):
         url = f"{self.BASE_URL}/create_expense"
         headers = {"Authorization": f"Bearer {token}"}
 
-        # Convert model to dict, exclude None to avoid sending nulls where not expected,
-        # but check if API expects specific format.
-        # The API docs say "split_equally" is required boolean.
-        # Pydantic model dump with mode='json' handles decimals.
         payload = expense_data.model_dump(mode='json', exclude_none=True)
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
-            # API returns { "expenses": [ ... ] } even for creation?
-            # The docs say:
-            # { "expenses": [ ... ] }
             return [Expense.model_validate(exp) for exp in data["expenses"]]
 
     async def create_comment(self, token: str, comment_data: CommentCreate) -> Comment:
@@ -105,5 +98,4 @@ class SplitwiseClient(Client):
             response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
-            # API returns { "comment": { ... } }
             return Comment.model_validate(data["comment"])
