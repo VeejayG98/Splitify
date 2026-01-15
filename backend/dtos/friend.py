@@ -1,7 +1,4 @@
 from __future__ import annotations
-from typing import List, TYPE_CHECKING
-from pydantic import Field
-
 from backend.dtos.user import User
 
 class Friend(User):
