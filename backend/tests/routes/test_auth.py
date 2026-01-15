@@ -1,26 +1,19 @@
 import pytest
+from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from backend.main import app
 from backend.services.client import Client, SplitwiseClient
 from backend.routes.auth import get_splitwise_client
 
-# Mock Client Implementation
-class MockSplitwiseClient(Client):
-    def __init__(self, client_id="test_id", api_key="test_token"):
-        self.client_id = client_id
-        self.api_key = api_key
-
-    def get_client_id(self) -> str:
-        return self.client_id
-
-    def get_access_token(self) -> str:
-        return self.api_key
-
 @pytest.fixture
 def client():
     # Dependency Override
+    mock_service = MagicMock(spec=SplitwiseClient)
+    mock_service.get_client_id.return_value = "test_id"
+    mock_service.get_access_token.return_value = "test_token"
+
     def override_get_splitwise_client():
-        return MockSplitwiseClient()
+        return mock_service
 
     app.dependency_overrides[get_splitwise_client] = override_get_splitwise_client
 
