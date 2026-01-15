@@ -3,6 +3,8 @@ from typing import List, Dict, Any, Optional
 import httpx
 from backend.dtos.user import User
 from backend.dtos.group import Group
+from backend.dtos.expense import Expense, CreateExpense
+from backend.dtos.comment import Comment, CreateComment
 
 class Client(ABC):
     """
@@ -67,3 +69,61 @@ class SplitwiseClient(Client):
             response.raise_for_status()
             data = response.json()
             return [Group.model_validate(group) for group in data["groups"]]
+
+    def _prepare_payload(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Flattens nested dictionaries/lists for Splitwise API form-urlencoded format.
+        e.g. users=[{'user_id': 1}] -> users__0__user_id=1
+        """
+        flat_data = {}
+        for key, value in data.items():
+            if isinstance(value, list):
+                for i, item in enumerate(value):
+                    if isinstance(item, dict):
+                        for sub_key, sub_value in item.items():
+                             flat_data[f"{key}__{i}__{sub_key}"] = sub_value
+                    else:
+                        # Fallback for simple lists if any
+                         flat_data[f"{key}__{i}"] = value
+            elif isinstance(value, dict):
+                 # Not expected for current DTOs but good to have
+                 for sub_key, sub_value in value.items():
+                      flat_data[f"{key}__{sub_key}"] = sub_value
+            else:
+                flat_data[key] = value
+        return flat_data
+
+    async def create_expense(self, token: str, expense_data: CreateExpense) -> List[Expense]:
+        """
+        Creates a new expense.
+        """
+        url = f"{self.BASE_URL}/create_expense"
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Splitwise expects form-encoded data with flattened parameters
+        raw_data = expense_data.model_dump(exclude_none=True, mode='json')
+        payload = self._prepare_payload(raw_data)
+
+        async with httpx.AsyncClient() as client:
+            # Using data=payload sends application/x-www-form-urlencoded
+            response = await client.post(url, headers=headers, data=payload)
+            response.raise_for_status()
+            data = response.json()
+            return [Expense.model_validate(exp) for exp in data["expenses"]]
+
+    async def create_comment(self, token: str, comment_data: CreateComment) -> Comment:
+        """
+        Adds a comment to an expense.
+        """
+        url = f"{self.BASE_URL}/create_comment"
+        headers = {"Authorization": f"Bearer {token}"}
+
+        # Usually comments are simpler, but consistency is good
+        raw_data = comment_data.model_dump(exclude_none=True, mode='json')
+        payload = self._prepare_payload(raw_data)
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, headers=headers, data=payload)
+            response.raise_for_status()
+            data = response.json()
+            return Comment.model_validate(data["comment"])

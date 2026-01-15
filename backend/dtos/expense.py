@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import Optional, List, Literal
+from typing import Optional, List, Literal, Dict, Any
 from datetime import datetime
 from decimal import Decimal
-from pydantic import Field, field_validator, HttpUrl
+from pydantic import Field, field_validator, HttpUrl, BaseModel
 
 from backend.dtos.base import ReadDto
 from backend.dtos.user import User
@@ -25,6 +25,30 @@ class UserShare(ReadDto):
     paid_share: Decimal
     owed_share: Decimal
     net_balance: Decimal
+
+class CreateExpenseUserShare(BaseModel):
+    user_id: int
+    paid_share: Decimal
+    owed_share: Decimal
+
+class CreateExpense(BaseModel):
+    cost: Decimal = Field(..., gt=0)
+    description: str = Field(..., min_length=1)
+    currency_code: str = Field(..., min_length=3, max_length=3)
+    users: Optional[List[CreateExpenseUserShare]] = None
+    category_id: Optional[int] = None
+    group_id: Optional[int] = None
+    date: Optional[datetime] = None
+    details: Optional[str] = None
+    split_equally: bool = True
+    repeat_interval: Optional[Literal["never", "weekly", "fortnightly", "monthly", "yearly"]] = None
+
+    @field_validator('description')
+    @classmethod
+    def description_must_not_be_whitespace(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError('must not be whitespace')
+        return v
 
 class Expense(ReadDto):
     id: int = Field(..., ge=0)
