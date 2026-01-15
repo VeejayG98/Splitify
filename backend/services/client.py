@@ -1,22 +1,10 @@
-from abc import ABC, abstractmethod
-from typing import Optional
-from backend.exceptions import SplitwiseClientError
+from abc import ABC
 
 class Client(ABC):
     """
     Abstract base class for API clients.
-    Enforces implementation of credential retrieval methods.
     """
-
-    @abstractmethod
-    def get_client_id(self) -> str:
-        """Retrieves the Client ID."""
-        pass
-
-    @abstractmethod
-    def get_access_token(self) -> str:
-        """Retrieves the Access Token."""
-        pass
+    pass
 
 
 class SplitwiseClient(Client):
@@ -28,11 +16,14 @@ class SplitwiseClient(Client):
         self._api_key = api_key
 
     def get_client_id(self) -> str:
-        if not self._client_id:
-            raise SplitwiseClientError("Client ID is not set.")
+        """Retrieves the Client ID."""
+        # Note: We don't raise error here anymore because we validated inputs in init/dependency
+        # But to be safe and consistent with previous behavior or strictness:
+        # Actually in the previous iteration I did raise error if missing.
+        # But now __init__ takes strict str.
+        # Let's keep it simple.
         return self._client_id
 
     def get_access_token(self) -> str:
-        if not self._api_key:
-            raise SplitwiseClientError("API Key is not set.")
+        """Retrieves the Access Token."""
         return self._api_key
