@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status
-from typing import List
+from typing import List, Set
 import httpx
 from backend.services.client import SplitwiseClient
 from backend.dtos.user import User
@@ -68,20 +68,13 @@ async def find_common_groups(
     """
     try:
         groups = await client.get_groups(token)
+        participant_set = set(participants)
 
-        common_groups = []
-        for group in groups:
-            # Check if all participants are in the group members
-            member_ids = {member.id for member in group.members}
-
-            is_common = True
-            for pid in participants:
-                if pid not in member_ids:
-                    is_common = False
-                    break
-
-            if is_common:
-                common_groups.append(CommonGroup(id=group.id, name=group.name))
+        common_groups = [
+            CommonGroup(id=group.id, name=group.name)
+            for group in groups
+            if participant_set.issubset({member.id for member in group.members})
+        ]
 
         return CommonGroupsResponse(common_groups=common_groups)
 
