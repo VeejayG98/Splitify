@@ -40,7 +40,6 @@ class SplitwiseClient(Client):
             response = await client.get(url, headers=headers)
             response.raise_for_status()
             data = response.json()
-            # Splitwise returns {"user": {...}}
             return User.model_validate(data["user"])
 
     async def get_friends(self, token: str) -> List[User]:
@@ -54,11 +53,6 @@ class SplitwiseClient(Client):
             response = await client.get(url, headers=headers)
             response.raise_for_status()
             data = response.json()
-            # Splitwise returns {"friends": [...]}
-            # Note: The friends object from Splitwise might contain fields that match User DTO partially.
-            # We rely on Pydantic to ignore extra fields or validate strictly.
-            # Our User DTO has required fields. We need to ensure Splitwise API provides them.
-            # Friend object usually has id, first_name, last_name, picture, etc.
             return [User.model_validate(friend) for friend in data["friends"]]
 
     async def get_groups(self, token: str) -> List[Group]:
@@ -72,5 +66,4 @@ class SplitwiseClient(Client):
             response = await client.get(url, headers=headers)
             response.raise_for_status()
             data = response.json()
-            # Splitwise returns {"groups": [...]}
             return [Group.model_validate(group) for group in data["groups"]]
