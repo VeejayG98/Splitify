@@ -118,9 +118,8 @@ class SplitwiseClient(Client):
         url = f"{self.BASE_URL}/create_comment"
         headers = {"Authorization": f"Bearer {token}"}
 
-        # Usually comments are simpler, but consistency is good
-        raw_data = comment_data.model_dump(exclude_none=True, mode='json')
-        payload = self._prepare_payload(raw_data)
+        # Comments are flat, so we don't strictly need _prepare_payload, but we'll stick to a simple dict
+        payload = comment_data.model_dump(exclude_none=True, mode='json')
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, data=payload)
