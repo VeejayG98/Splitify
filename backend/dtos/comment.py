@@ -31,8 +31,8 @@ class CreateComment(BaseModel):
 
 class CreateItemizedComment(BaseModel):
     expense_id: int = Field(..., gt=0)
-    items: List[CommentItem]
-    participants: List[CommentParticipant]
+    items: List[CommentItem] = Field(..., min_length=1)
+    participants: List[CommentParticipant] = Field(..., min_length=1)
 
 class Comment(ReadDto):
     id: int = Field(..., ge=0)

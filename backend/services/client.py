@@ -157,6 +157,10 @@ class SplitwiseClient(Client):
         Adds a comment to an expense by generating a CSV breakdown from itemized data.
         Transforms CreateItemizedComment -> CreateComment and delegates.
         """
+        # Although DTO validation should catch this, adding explicit check as requested
+        if not comment_data.items or not comment_data.participants:
+            raise ValueError("Items and participants must not be empty.")
+
         content = self._generate_csv_comment(comment_data.items, comment_data.participants)
 
         simple_comment = CreateComment(
