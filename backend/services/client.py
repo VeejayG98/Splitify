@@ -4,7 +4,7 @@ import httpx
 from backend.dtos.user import User
 from backend.dtos.group import Group
 from backend.dtos.expense import Expense, CreateExpense
-from backend.dtos.comment import Comment, CreateComment
+from backend.dtos.comment import Comment, CreateComment, CommentItem, CommentParticipant
 
 class Client(ABC):
     """
@@ -93,6 +93,31 @@ class SplitwiseClient(Client):
                 flat_data[key] = value
         return flat_data
 
+    def _generate_csv_comment(self, items: List[CommentItem], participants: List[CommentParticipant]) -> str:
+        """
+        Generates a CSV formatted string summarizing the bill breakdown.
+        Mirrors the legacy behavior for simpler visualization on Splitwise.
+        """
+        # Header: Item, Participant Names..., Item Cost
+        header = ["Item"]
+        for p in participants:
+            name = f"{p.first_name} {p.last_name}" if p.last_name else p.first_name
+            header.append(name)
+        header.append("Item Cost")
+
+        rows = [",".join(header)]
+
+        for item in items:
+            row = [item.name]
+            for p in participants:
+                # Get split amount for this participant, default to 0
+                amount = item.splits.get(p.id, 0)
+                row.append(str(amount))
+            row.append(str(item.cost))
+            rows.append(",".join(row))
+
+        return "\n".join(rows)
+
     async def create_expense(self, token: str, expense_data: CreateExpense) -> List[Expense]:
         """
         Creates a new expense.
@@ -114,12 +139,22 @@ class SplitwiseClient(Client):
     async def create_comment(self, token: str, comment_data: CreateComment) -> Comment:
         """
         Adds a comment to an expense.
+        If 'items' and 'participants' are provided, generates a CSV breakdown comment.
+        Otherwise, uses the 'content' field.
         """
         url = f"{self.BASE_URL}/create_comment"
         headers = {"Authorization": f"Bearer {token}"}
 
-        # Comments are flat, so we don't strictly need _prepare_payload, but we'll stick to a simple dict
-        payload = comment_data.model_dump(exclude_none=True, mode='json')
+        if comment_data.items and comment_data.participants:
+            content = self._generate_csv_comment(comment_data.items, comment_data.participants)
+        else:
+            content = comment_data.content
+
+        # Simple payload with flattened content
+        payload = {
+            "expense_id": comment_data.expense_id,
+            "content": content
+        }
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, data=payload)

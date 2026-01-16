@@ -5,7 +5,7 @@ from backend.main import app
 from backend.dependencies import get_splitwise_client
 from backend.services.client import SplitwiseClient
 from backend.dtos.expense import Expense, CreateExpense
-from backend.dtos.comment import Comment, CreateComment
+from backend.dtos.comment import Comment, CreateComment, CommentItem, CommentParticipant
 
 # Mock data
 MOCK_EXPENSE_DATA = {
@@ -18,6 +18,31 @@ MOCK_EXPENSE_DATA = {
 MOCK_COMMENT_DATA = {
     "expense_id": 123,
     "content": "Nice lunch!"
+}
+
+MOCK_ITEMIZED_COMMENT_DATA = {
+    "expense_id": 123,
+    "participants": [
+        {"id": 1, "first_name": "Alice"},
+        {"id": 2, "first_name": "Bob"}
+    ],
+    "items": [
+        {
+            "name": "Pizza",
+            "cost": "20.00",
+            "splits": {
+                "1": "10.00",
+                "2": "10.00"
+            }
+        },
+        {
+            "name": "Soda",
+            "cost": "5.00",
+            "splits": {
+                "1": "5.00"
+            }
+        }
+    ]
 }
 
 MOCK_EXPENSE_RESPONSE = {
@@ -99,11 +124,32 @@ def test_add_comment_success(client, mock_splitwise_client):
     assert data["content"] == "Nice lunch!"
     mock_splitwise_client.create_comment.assert_called_once()
 
+def test_add_itemized_comment_success(client, mock_splitwise_client):
+    # Setup mock return value
+    mock_comment = Comment(id=789, content="CSV content", created_at="2023-10-27T10:05:00Z")
+    mock_splitwise_client.create_comment.return_value = mock_comment
+
+    response = client.post(
+        "/expenses/comments/add",
+        json=MOCK_ITEMIZED_COMMENT_DATA,
+        headers={"Authorization": "Bearer mock_token"}
+    )
+
+    assert response.status_code == 201
+
+    # Verify the CSV content generation logic was triggered in the client
+    # We can check the arguments passed to create_comment
+    call_args = mock_splitwise_client.create_comment.call_args
+    assert call_args is not None
+    comment_data = call_args[0][1] # second arg is comment_data
+    assert isinstance(comment_data, CreateComment)
+    assert comment_data.items is not None
+    assert len(comment_data.items) == 2
+
 def test_add_comment_validation_error(client):
-    # Empty content
+    # Empty content and no items
     invalid_data = {
-        "expense_id": 123,
-        "content": ""  # Should fail validation
+        "expense_id": 123
     }
 
     response = client.post(
@@ -112,6 +158,4 @@ def test_add_comment_validation_error(client):
         headers={"Authorization": "Bearer mock_token"}
     )
 
-    # Depending on how the validator is set up, it might be 422.
-    # The validator raises ValueError("must not be whitespace"), which Pydantic catches and returns as 422.
     assert response.status_code == 422
