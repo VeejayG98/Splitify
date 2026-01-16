@@ -34,13 +34,13 @@ async def add_expense(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to create expense")
 
 @router.post("/comments/add", response_model=Comment, status_code=status.HTTP_201_CREATED)
-async def add_comment(
-    comment_data: CreateComment,
+async def add_itemized_comment(
+    payload: CreateComment,
     client: Annotated[SplitwiseClient, Depends(get_splitwise_client)],
     token: Annotated[str, Depends(get_current_user_token)]
 ):
     try:
-        return await client.create_comment(token, comment_data)
+        return await client.create_comment(token, payload)
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail="External API error")
     except Exception as e:

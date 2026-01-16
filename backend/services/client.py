@@ -142,13 +142,20 @@ class SplitwiseClient(Client):
         If 'items' and 'participants' are provided, generates a CSV breakdown comment.
         Otherwise, uses the 'content' field.
         """
-        url = f"{self.BASE_URL}/create_comment"
-        headers = {"Authorization": f"Bearer {token}"}
 
+        content = None
         if comment_data.items and comment_data.participants:
             content = self._generate_csv_comment(comment_data.items, comment_data.participants)
         else:
             content = comment_data.content
+
+        # Only call API if there is content to post
+        if not content:
+             # Should be caught by validation, but as a safeguard
+             raise ValueError("No content to post for comment")
+
+        url = f"{self.BASE_URL}/create_comment"
+        headers = {"Authorization": f"Bearer {token}"}
 
         # Simple payload with flattened content
         payload = {
