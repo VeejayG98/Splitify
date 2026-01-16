@@ -5,6 +5,7 @@ from backend.dtos.user import User
 from backend.dtos.group import Group
 from backend.dtos.expense import Expense, CreateExpense
 from backend.dtos.comment import Comment, CreateComment, CreateItemizedComment, CommentItem, CommentParticipant
+from backend.exceptions import InvalidCommentDataError
 
 class Client(ABC):
     """
@@ -159,7 +160,7 @@ class SplitwiseClient(Client):
         """
         # Although DTO validation should catch this, adding explicit check as requested
         if not comment_data.items or not comment_data.participants:
-            raise ValueError("Items and participants must not be empty.")
+            raise InvalidCommentDataError("Items and participants must not be empty.")
 
         content = self._generate_csv_comment(comment_data.items, comment_data.participants)
 
