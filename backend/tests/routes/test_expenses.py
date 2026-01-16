@@ -5,7 +5,7 @@ from backend.main import app
 from backend.dependencies import get_splitwise_client
 from backend.services.client import SplitwiseClient
 from backend.dtos.expense import Expense, CreateExpense
-from backend.dtos.comment import Comment, CreateComment, CommentItem, CommentParticipant
+from backend.dtos.comment import Comment, CreateComment, CreateItemizedComment
 
 # Mock data
 MOCK_EXPENSE_DATA = {
@@ -67,6 +67,7 @@ def mock_splitwise_client():
     mock_client = MagicMock(spec=SplitwiseClient)
     mock_client.create_expense = AsyncMock()
     mock_client.create_comment = AsyncMock()
+    mock_client.create_itemized_comment = AsyncMock()
     return mock_client
 
 @pytest.fixture
@@ -127,7 +128,7 @@ def test_add_comment_success(client, mock_splitwise_client):
 def test_add_itemized_comment_success(client, mock_splitwise_client):
     # Setup mock return value
     mock_comment = Comment(id=789, content="CSV content", created_at="2023-10-27T10:05:00Z")
-    mock_splitwise_client.create_comment.return_value = mock_comment
+    mock_splitwise_client.create_itemized_comment.return_value = mock_comment
 
     response = client.post(
         "/expenses/comments/add",
@@ -137,19 +138,15 @@ def test_add_itemized_comment_success(client, mock_splitwise_client):
 
     assert response.status_code == 201
 
-    # Verify the CSV content generation logic was triggered in the client
-    # We can check the arguments passed to create_comment
-    call_args = mock_splitwise_client.create_comment.call_args
-    assert call_args is not None
-    comment_data = call_args[0][1] # second arg is comment_data
-    assert isinstance(comment_data, CreateComment)
-    assert comment_data.items is not None
-    assert len(comment_data.items) == 2
+    # Verify create_itemized_comment was called instead of create_comment
+    mock_splitwise_client.create_itemized_comment.assert_called_once()
+    mock_splitwise_client.create_comment.assert_not_called()
 
 def test_add_comment_validation_error(client):
     # Empty content and no items
     invalid_data = {
         "expense_id": 123
+        # Missing content and missing items/participants
     }
 
     response = client.post(

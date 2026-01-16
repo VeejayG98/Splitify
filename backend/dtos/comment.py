@@ -20,22 +20,19 @@ class CommentParticipant(BaseModel):
 
 class CreateComment(BaseModel):
     expense_id: int = Field(..., gt=0)
-    content: Optional[str] = None
-    items: Optional[List[CommentItem]] = None
-    participants: Optional[List[CommentParticipant]] = None
-
-    @model_validator(mode='after')
-    def check_content_or_items(self) -> Self:
-        if not self.content and not (self.items and self.participants):
-            raise ValueError("Either 'content' or both 'items' and 'participants' must be provided.")
-        return self
+    content: str = Field(..., min_length=1)
 
     @field_validator('content')
     @classmethod
-    def content_must_not_be_whitespace(cls, v: Optional[str]) -> Optional[str]:
-        if v is not None and not v.strip():
+    def content_must_not_be_whitespace(cls, v: str) -> str:
+        if not v.strip():
             raise ValueError('must not be whitespace')
         return v
+
+class CreateItemizedComment(BaseModel):
+    expense_id: int = Field(..., gt=0)
+    items: List[CommentItem]
+    participants: List[CommentParticipant]
 
 class Comment(ReadDto):
     id: int = Field(..., ge=0)

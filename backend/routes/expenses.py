@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Annotated, List
+from typing import Annotated, List, Union
 import httpx
 
 from backend.dependencies import get_splitwise_client
 from backend.services.client import SplitwiseClient
 from backend.dtos.expense import CreateExpense, Expense
-from backend.dtos.comment import CreateComment, Comment
+from backend.dtos.comment import CreateComment, CreateItemizedComment, Comment
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 router = APIRouter(prefix="/expenses", tags=["Expenses"])
@@ -35,12 +35,15 @@ async def add_expense(
 
 @router.post("/comments/add", response_model=Comment, status_code=status.HTTP_201_CREATED)
 async def add_itemized_comment(
-    payload: CreateComment,
+    payload: Union[CreateItemizedComment, CreateComment],
     client: Annotated[SplitwiseClient, Depends(get_splitwise_client)],
     token: Annotated[str, Depends(get_current_user_token)]
 ):
     try:
-        return await client.create_comment(token, payload)
+        if isinstance(payload, CreateItemizedComment):
+            return await client.create_itemized_comment(token, payload)
+        else:
+            return await client.create_comment(token, payload)
     except httpx.HTTPStatusError as e:
         raise HTTPException(status_code=e.response.status_code, detail="External API error")
     except Exception as e:

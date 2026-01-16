@@ -4,7 +4,7 @@ import httpx
 from backend.dtos.user import User
 from backend.dtos.group import Group
 from backend.dtos.expense import Expense, CreateExpense
-from backend.dtos.comment import Comment, CreateComment, CommentItem, CommentParticipant
+from backend.dtos.comment import Comment, CreateComment, CreateItemizedComment, CommentItem, CommentParticipant
 
 class Client(ABC):
     """
@@ -138,33 +138,30 @@ class SplitwiseClient(Client):
 
     async def create_comment(self, token: str, comment_data: CreateComment) -> Comment:
         """
-        Adds a comment to an expense.
-        If 'items' and 'participants' are provided, generates a CSV breakdown comment.
-        Otherwise, uses the 'content' field.
+        Adds a comment to an expense using simple content.
         """
-
-        content = None
-        if comment_data.items and comment_data.participants:
-            content = self._generate_csv_comment(comment_data.items, comment_data.participants)
-        else:
-            content = comment_data.content
-
-        # Only call API if there is content to post
-        if not content:
-             # Should be caught by validation, but as a safeguard
-             raise ValueError("No content to post for comment")
-
         url = f"{self.BASE_URL}/create_comment"
         headers = {"Authorization": f"Bearer {token}"}
 
         # Simple payload with flattened content
-        payload = {
-            "expense_id": comment_data.expense_id,
-            "content": content
-        }
+        payload = comment_data.model_dump(exclude_none=True, mode='json')
 
         async with httpx.AsyncClient() as client:
             response = await client.post(url, headers=headers, data=payload)
             response.raise_for_status()
             data = response.json()
             return Comment.model_validate(data["comment"])
+
+    async def create_itemized_comment(self, token: str, comment_data: CreateItemizedComment) -> Comment:
+        """
+        Adds a comment to an expense by generating a CSV breakdown from itemized data.
+        Transforms CreateItemizedComment -> CreateComment and delegates.
+        """
+        content = self._generate_csv_comment(comment_data.items, comment_data.participants)
+
+        simple_comment = CreateComment(
+            expense_id=comment_data.expense_id,
+            content=content
+        )
+
+        return await self.create_comment(token, simple_comment)
