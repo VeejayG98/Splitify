@@ -1,17 +1,25 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import httpx
 from backend.dtos.user import User
 from backend.dtos.group import Group
 from backend.dtos.expense import Expense, CreateExpense
 from backend.dtos.comment import Comment, CreateComment, CreateItemizedComment, CommentItem, CommentParticipant
-from backend.exceptions import InvalidCommentDataError
+from backend.exceptions import InvalidCommentDataError, SplitwiseClientError
 
 class Client(ABC):
     """
     Abstract base class for API clients.
     """
-    pass
+    @abstractmethod
+    def get_client_id(self) -> str:
+        """Retrieves the Client ID."""
+        pass
+
+    @abstractmethod
+    async def get_access_token(self, code: str, state: str, redirect_uri: str) -> Dict[str, Any]:
+        """Exchanges the authorization code for an access token."""
+        pass
 
 
 class SplitwiseClient(Client):
@@ -28,9 +36,30 @@ class SplitwiseClient(Client):
         """Retrieves the Client ID."""
         return self._client_id
 
-    def get_access_token(self) -> str:
-        """Retrieves the Access Token."""
-        return self._api_key
+    async def get_access_token(self, code: str, state: str, redirect_uri: str) -> Dict[str, Any]:
+        """
+        Exchanges the authorization code for an access token.
+        """
+        if state != "SPLITIFY_APP":
+             raise SplitwiseClientError("State doesn't match")
+
+        url = "https://secure.splitwise.com/oauth/token"
+        params = {
+            "client_id": self._client_id,
+            "client_secret": self._api_key,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": redirect_uri
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, data=params, headers=headers)
+            response.raise_for_status()
+            return response.json()
 
     async def get_current_user(self, token: str) -> User:
         """
