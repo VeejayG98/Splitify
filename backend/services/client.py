@@ -5,7 +5,7 @@ from backend.dtos.user import User
 from backend.dtos.group import Group
 from backend.dtos.expense import Expense, CreateExpense
 from backend.dtos.comment import Comment, CreateComment, CreateItemizedComment, CommentItem, CommentParticipant
-from backend.exceptions import InvalidCommentDataError
+from backend.exceptions import InvalidCommentDataError, SplitwiseClientError
 
 class Client(ABC):
     """
@@ -18,7 +18,8 @@ class SplitwiseClient(Client):
     """
     Concrete implementation of Client for Splitwise.
     """
-    BASE_URL = "https://secure.splitwise.com/api/v3.0"
+    BASE_URL = "https://secure.splitwise.com"
+    SPLITWISE_API_VERSION = "api/v3.0"
 
     def __init__(self, client_id: str, api_key: str):
         self._client_id = client_id
@@ -28,15 +29,36 @@ class SplitwiseClient(Client):
         """Retrieves the Client ID."""
         return self._client_id
 
-    def get_access_token(self) -> str:
-        """Retrieves the Access Token."""
-        return self._api_key
+    async def get_access_token(self, code: str, state: str, redirect_uri: str) -> Dict[str, Any]:
+        """
+        Exchanges the authorization code for an access token.
+        """
+        if state != "SPLITIFY_APP":
+             raise SplitwiseClientError("State doesn't match")
+
+        url = f"{self.BASE_URL}/oauth/token"
+        params = {
+            "client_id": self._client_id,
+            "client_secret": self._api_key,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": redirect_uri
+        }
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json"
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, data=params, headers=headers)
+            response.raise_for_status()
+            return response.json()
 
     async def get_current_user(self, token: str) -> User:
         """
         Fetches the current user's information.
         """
-        url = f"{self.BASE_URL}/get_current_user"
+        url = f"{self.BASE_URL}/{self.SPLITWISE_API_VERSION}/get_current_user"
         headers = {"Authorization": f"Bearer {token}"}
 
         async with httpx.AsyncClient() as client:
@@ -49,7 +71,7 @@ class SplitwiseClient(Client):
         """
         Fetches the current user's friends.
         """
-        url = f"{self.BASE_URL}/get_friends"
+        url = f"{self.BASE_URL}/{self.SPLITWISE_API_VERSION}/get_friends"
         headers = {"Authorization": f"Bearer {token}"}
 
         async with httpx.AsyncClient() as client:
@@ -62,7 +84,7 @@ class SplitwiseClient(Client):
         """
         Fetches the groups the user is part of.
         """
-        url = f"{self.BASE_URL}/get_groups"
+        url = f"{self.BASE_URL}/{self.SPLITWISE_API_VERSION}/get_groups"
         headers = {"Authorization": f"Bearer {token}"}
 
         async with httpx.AsyncClient() as client:
@@ -123,7 +145,7 @@ class SplitwiseClient(Client):
         """
         Creates a new expense.
         """
-        url = f"{self.BASE_URL}/create_expense"
+        url = f"{self.BASE_URL}/{self.SPLITWISE_API_VERSION}/create_expense"
         headers = {"Authorization": f"Bearer {token}"}
 
         # Splitwise expects form-encoded data with flattened parameters
@@ -141,7 +163,7 @@ class SplitwiseClient(Client):
         """
         Adds a comment to an expense using simple content.
         """
-        url = f"{self.BASE_URL}/create_comment"
+        url = f"{self.BASE_URL}/{self.SPLITWISE_API_VERSION}/create_comment"
         headers = {"Authorization": f"Bearer {token}"}
 
         # Simple payload with flattened content

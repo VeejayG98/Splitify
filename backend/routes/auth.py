@@ -2,7 +2,7 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from backend.services.client import SplitwiseClient
 from backend.exceptions import SplitwiseClientError
-from backend.dependencies import get_splitwise_client
+from backend.dependencies import get_splitwise_client, get_redirect_uri
 
 router = APIRouter()
 
@@ -16,12 +16,17 @@ def get_client_id(client: SplitwiseClient = Depends(get_splitwise_client)):
     except SplitwiseClientError as e:
          raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/getAccessToken")
-def get_access_token(client: SplitwiseClient = Depends(get_splitwise_client)):
+@router.get("/get_access_token")
+async def get_access_token(
+    code: str,
+    state: str,
+    client: SplitwiseClient = Depends(get_splitwise_client),
+    redirect_uri: str = Depends(get_redirect_uri)
+):
     """
-    Returns the Access Token.
+    Exchanges authorization code for an Access Token.
     """
     try:
-        return {"access_token": client.get_access_token()}
+        return await client.get_access_token(code=code, state=state, redirect_uri=redirect_uri)
     except SplitwiseClientError as e:
          raise HTTPException(status_code=500, detail=str(e))

@@ -15,3 +15,12 @@ def get_splitwise_client() -> SplitwiseClient:
          raise HTTPException(status_code=500, detail="Server configuration error: Missing Splitwise credentials.")
 
     return SplitwiseClient(client_id=client_id, api_key=api_key)
+
+def get_redirect_uri() -> str:
+    """
+    Retrieves the Redirect URI from environment variables.
+    """
+    redirect_uri = os.environ.get("REDIRECT_URI")
+    if not redirect_uri:
+        raise HTTPException(status_code=500, detail="Server configuration error: Missing REDIRECT_URI.")
+    return redirect_uri
